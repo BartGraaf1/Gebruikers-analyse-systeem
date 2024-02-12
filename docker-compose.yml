@@ -3,7 +3,6 @@ version: '3'
 networks:
   laravel:
 
-
 services:
   app:
     build:
@@ -110,5 +109,18 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: secret
+    depends_on:
+      - mysql
     networks:
       - laravel
