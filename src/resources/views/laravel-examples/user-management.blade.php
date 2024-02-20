@@ -65,7 +65,7 @@
                                         <p class="text-xs font-weight-bold mb-0">Admin</p>
                                     </td>
                                     <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">admin@softui.com</p>
+                                        <p class="text-xs font-weight-bold mb-0">admin@admin.com</p>
                                     </td>
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0">Admin</p>
@@ -210,5 +210,5 @@
         </div>
     </div>
 </div>
- 
+
 @endsection

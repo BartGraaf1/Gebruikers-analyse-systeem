@@ -78,7 +78,7 @@ And Laravel: https://laravel.com/docs/10.x
 7. Run `php artisan storage:link` to create the storage symlink (if you are using **Vagrant** with **Homestead** for development, remember to ssh into your virtual machine and run the command from there).
 
 ## Usage
-Register a user or login with default user **admin@softui.com** and password **secret** from your database and start testing (make sure to run the migrations and seeders for these credentials to be available).
+Register a user or login with default user **admin@admin.com** and password **secret** from your database and start testing (make sure to run the migrations and seeders for these credentials to be available).
 
 Besides the dashboard, the auth pages, the billing and table pages, there is also has an edit profile page. All the necessary files are installed out of the box and all the needed routes are added to `routes/web.php`. Keep in mind that all of the features can be viewed once you login using the credentials provided or by registering your own user. 
 
@@ -104,7 +104,7 @@ Besides the dashboard, the auth pages, the billing and table pages, there is als
 The documentation for the Soft UI Dashboard Laravel is hosted at our [website](https://soft-ui-dashboard-laravel.creative-tim.com/documentation/getting-started/overview.html).
 
 ### Login
-If you are not logged in you can only access this page or the Sign Up page. The default url takes you to the login page where you use the default credentials **admin@softui.com** with the password **secret**. Logging in is possible only with already existing credentials. For this to work you should have run the migrations.
+If you are not logged in you can only access this page or the Sign Up page. The default url takes you to the login page where you use the default credentials **admin@admin.com** with the password **secret**. Logging in is possible only with already existing credentials. For this to work you should have run the migrations.
 
 The `App\Http\Controllers\SessionController` handles the logging in of an existing user.
 
