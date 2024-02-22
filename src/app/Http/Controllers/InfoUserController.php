@@ -13,7 +13,7 @@ class InfoUserController extends Controller
 
     public function create()
     {
-        return view('laravel-examples/user-profile');
+        return view('user-profile');
     }
 
     public function store(Request $request)
@@ -26,22 +26,12 @@ class InfoUserController extends Controller
             'location' => ['max:70'],
             'about_me'    => ['max:150'],
         ]);
-        if($request->get('email') != Auth::user()->email)
-        {
-            if(env('IS_DEMO') && Auth::user()->id == 1)
-            {
-                return redirect()->back()->withErrors(['msg2' => 'You are in a demo version, you can\'t change the email address.']);
-                
-            }
-            
-        }
-        else{
-            $attribute = request()->validate([
-                'email' => ['required', 'email', 'max:50', Rule::unique('users')->ignore(Auth::user()->id)],
-            ]);
-        }
-        
-        
+
+        $attribute = request()->validate([
+            'email' => ['required', 'email', 'max:50', Rule::unique('users')->ignore(Auth::user()->id)],
+        ]);
+
+
         User::where('id',Auth::user()->id)
         ->update([
             'name'    => $attributes['name'],
@@ -54,4 +44,14 @@ class InfoUserController extends Controller
 
         return redirect('/user-profile')->with('success','Profile updated successfully');
     }
+
+
+
+    // Method to retrieve all users
+    public function index()
+    {
+        $users = User::all(); // Fetch all users from the database
+        return view('user-management', compact('users')); // Return a view and pass the users data to it
+    }
+
 }
