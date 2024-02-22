@@ -70,12 +70,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/{user}/delete', [InfoUserController::class, 'confirmDelete'])->name('user.confirmDelete');
     Route::delete('/user/{user}', [InfoUserController::class, 'destroy'])->name('user.destroy');
 
+    Route::get('/user-profile', [InfoUserController::class, 'createProfile']);
+    Route::post('/user-profile', [InfoUserController::class, 'storeProfile']);
 
 
 
     Route::get('/logout', [SessionsController::class, 'destroy']);
-	Route::get('/user-profile', [InfoUserController::class, 'create']);
-	Route::post('/user-profile', [InfoUserController::class, 'store']);
     Route::get('/login', function () {
 		return view('dashboard');
 	})->name('sign-up');
