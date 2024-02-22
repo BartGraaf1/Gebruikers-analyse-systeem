@@ -41,8 +41,6 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('rtl');
 	})->name('rtl');
 
-    Route::get('user-management', [InfoUserController::class, 'index'])->name('user-management');
-
 	Route::get('tables', function () {
 		return view('tables');
 	})->name('tables');
@@ -58,6 +56,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('static-sign-up', function () {
 		return view('static-sign-up');
 	})->name('sign-up');
+
+
+    //User management
+    Route::get('/users', [InfoUserController::class, 'index']);
+    Route::get('/user/add', [InfoUserController::class, 'create']);
+    Route::post('/user', [InfoUserController::class, 'store'])->name('user.store');
+    Route::get('/user/{user}/edit', [InfoUserController::class, 'edit']);
+    Route::patch('/user/{user}', [InfoUserController::class, 'update'])->name('user.update');
+    Route::delete('/user/{user}', [InfoUserController::class, 'destroy']);
+
+
 
     Route::get('/logout', [SessionsController::class, 'destroy']);
 	Route::get('/user-profile', [InfoUserController::class, 'create']);
