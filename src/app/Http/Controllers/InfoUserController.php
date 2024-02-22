@@ -13,7 +13,7 @@ class InfoUserController extends Controller
 
     public function create()
     {
-        return view('laravel-examples/user-profile');
+        return view('user-profile');
     }
 
     public function store(Request $request)
@@ -44,4 +44,14 @@ class InfoUserController extends Controller
 
         return redirect('/user-profile')->with('success','Profile updated successfully');
     }
+
+
+
+    // Method to retrieve all users
+    public function index()
+    {
+        $users = User::all(); // Fetch all users from the database
+        return view('user-management', compact('users')); // Return a view and pass the users data to it
+    }
+
 }

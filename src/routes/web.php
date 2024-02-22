@@ -41,9 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('rtl');
 	})->name('rtl');
 
-	Route::get('user-management', function () {
-		return view('laravel-examples/user-management');
-	})->name('user-management');
+    Route::get('user-management', [InfoUserController::class, 'index'])->name('user-management');
 
 	Route::get('tables', function () {
 		return view('tables');
