@@ -31,3 +31,8 @@ Restart Docker
 
 - `docker-compose down`
 - `docker-compose up -d`
+
+
+Misschien deze nog:
+`docker-compose run --rm artisan make:mail WelcomeMail`
+

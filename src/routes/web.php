@@ -41,8 +41,6 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('rtl');
 	})->name('rtl');
 
-    Route::get('user-management', [InfoUserController::class, 'index'])->name('user-management');
-
 	Route::get('tables', function () {
 		return view('tables');
 	})->name('tables');
@@ -59,9 +57,25 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('static-sign-up');
 	})->name('sign-up');
 
+
+    //User management
+    Route::get('/users', [InfoUserController::class, 'index'])->name('users.index');
+
+    Route::get('/user/add', [InfoUserController::class, 'create']);
+    Route::post('/user', [InfoUserController::class, 'store'])->name('user.store');
+
+    Route::get('/user/{user}/edit', [InfoUserController::class, 'edit']);
+    Route::patch('/user/{user}', [InfoUserController::class, 'update'])->name('user.update');
+
+    Route::get('/user/{user}/delete', [InfoUserController::class, 'confirmDelete'])->name('user.confirmDelete');
+    Route::delete('/user/{user}', [InfoUserController::class, 'destroy'])->name('user.destroy');
+
+    Route::get('/user-profile', [InfoUserController::class, 'createProfile']);
+    Route::post('/user-profile', [InfoUserController::class, 'storeProfile']);
+
+
+
     Route::get('/logout', [SessionsController::class, 'destroy']);
-	Route::get('/user-profile', [InfoUserController::class, 'create']);
-	Route::post('/user-profile', [InfoUserController::class, 'store']);
     Route::get('/login', function () {
 		return view('dashboard');
 	})->name('sign-up');
