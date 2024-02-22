@@ -75,9 +75,9 @@
                                         <a href="/user/{{ $user->id }}/edit" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
                                             <i class="fas fa-user-edit text-secondary"></i>
                                         </a>
-                                        <span>
+                                        <a href="/user/{{ $user->id }}/delete" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete user">
                                             <i class="cursor-pointer fas fa-trash text-secondary"></i>
-                                        </span>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

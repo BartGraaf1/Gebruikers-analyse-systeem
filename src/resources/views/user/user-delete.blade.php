@@ -4,7 +4,7 @@
 
     <div class="container-fluid py-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header pb-0 px-3">
                         <h6 class="mb-0">{{ __('Delete User Confirmation') }}</h6>

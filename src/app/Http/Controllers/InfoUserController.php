@@ -78,11 +78,18 @@ class InfoUserController extends Controller
         return redirect('/users')->with('success', 'User successfully updated.');
     }
 
+    public function confirmDelete(User $user)
+    {
+        // Assuming 'User' is your model and it's correctly type-hinted to resolve the user instance
+        return view('user/user-delete', compact('user'));
+    }
+
+
     public function destroy(User $user)
     {
         // Deletes the user
         $user->delete();
 
-        return redirect('/user')->with('success', 'User successfully deleted.');
+        return redirect('/users')->with('success', 'User successfully deleted.');
     }
 }

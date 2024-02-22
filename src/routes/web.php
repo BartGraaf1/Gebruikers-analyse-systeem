@@ -59,12 +59,17 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     //User management
-    Route::get('/users', [InfoUserController::class, 'index']);
+    Route::get('/users', [InfoUserController::class, 'index'])->name('users.index');
+
     Route::get('/user/add', [InfoUserController::class, 'create']);
     Route::post('/user', [InfoUserController::class, 'store'])->name('user.store');
+
     Route::get('/user/{user}/edit', [InfoUserController::class, 'edit']);
     Route::patch('/user/{user}', [InfoUserController::class, 'update'])->name('user.update');
-    Route::delete('/user/{user}', [InfoUserController::class, 'destroy']);
+
+    Route::get('/user/{user}/delete', [InfoUserController::class, 'confirmDelete'])->name('user.confirmDelete');
+    Route::delete('/user/{user}', [InfoUserController::class, 'destroy'])->name('user.destroy');
+
 
 
 
