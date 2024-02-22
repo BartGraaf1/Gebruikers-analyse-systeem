@@ -67,15 +67,15 @@ class InfoUserController extends Controller
         // Validates and updates the user
         $validatedData = $request->validate([
             'name' => 'required|max:255',
-            'email' => ['required', 'email', 'max:255', Rule::unique('user')->ignore($user->id)],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|max:50',
             'location' => 'nullable|max:255',
-            'about_me' => 'nullable|max:255',
+            'user_role' => 'max:1',
         ]);
 
         $user->update($validatedData);
 
-        return redirect('/user')->with('success', 'User successfully updated.');
+        return redirect('/users')->with('success', 'User successfully updated.');
     }
 
     public function destroy(User $user)

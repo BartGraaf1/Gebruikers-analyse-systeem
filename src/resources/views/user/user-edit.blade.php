@@ -13,7 +13,7 @@
                     <!-- Assume route name is 'user.update' and we are editing $user -->
                     <form action="{{ route('user.update', $user->id) }}" method="POST" role="form text-left">
                         @csrf
-                        @method('PUT') <!-- Add this line to specify the form method as PUT -->
+                        @method('PATCH') <!-- Add this line to specify the form method as PUT -->
 
                         @if($errors->any())
                             <div class="mt-3  alert alert-primary alert-dismissible fade show" role="alert">
@@ -79,8 +79,8 @@
                             <div class="col-md-12">
                                 <label for="user-role" class="form-control-label">{{ __('User Role') }}</label>
                                 <select name="user_role" id="user_role" class="form-control">
-                                    <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Admin</option>
-                                    <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>Regular User</option>
+                                    <option value="1" {{ $user->user_role == 1 ? 'selected' : '' }}>Admin</option>
+                                    <option value="2" {{ $user->user_role == 2 ? 'selected' : '' }}>Regular User</option>
                                 </select>
                             </div>
                         </div>
