@@ -91,6 +91,21 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'external_db' => [
+            'driver' => 'mysql', // Assuming the external DB is MySQL, adjust as needed
+            'host' => env('EXTERNAL_DB_HOST', '127.0.0.1'),
+            'port' => env('EXTERNAL_DB_PORT', '3306'),
+            'database' => env('EXTERNAL_DB_DATABASE', 'forge'),
+            'username' => env('EXTERNAL_DB_USERNAME', 'forge'),
+            'password' => env('EXTERNAL_DB_PASSWORD', ''),
+            'unix_socket' => env('EXTERNAL_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
     ],
 
     /*
