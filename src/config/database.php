@@ -101,7 +101,7 @@ return [
             'unix_socket' => env('EXTERNAL_DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
+            'prefix' => 'pvp_',
             'strict' => true,
             'engine' => null,
         ],

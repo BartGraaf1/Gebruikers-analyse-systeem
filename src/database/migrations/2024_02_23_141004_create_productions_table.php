@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('productions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->boolean('is_active')->default(true);
-            // Add other fields as necessary
+            $table->string('title'); // Example column for the name of the production
+            $table->text('description')->nullable(); // Example nullable column for the description
+            $table->boolean('is_active')->default(true); // Example column for active status with a default value
+            // Add additional columns as needed
             $table->timestamps();
         });
     }

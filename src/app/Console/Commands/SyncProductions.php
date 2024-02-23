@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB; // Add this line
+use App\Models\Production;
 
 class SyncProductions extends Command
 {
@@ -25,6 +27,13 @@ class SyncProductions extends Command
      */
     public function handle()
     {
-        //
+        $externalProductions = DB::connection('external_db')->table('productions')->get();
+
+        foreach ($externalProductions as $externalProduction) {
+            Production::updateOrCreate(
+                ['id' => $externalProduction->id], // Assuming each production has a unique ID
+                ['title' => $externalProduction->title]
+            );
+        }
     }
 }

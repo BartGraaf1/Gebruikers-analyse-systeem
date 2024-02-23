@@ -36,3 +36,5 @@ Restart Docker
 Misschien deze nog:
 `docker-compose run --rm artisan make:mail WelcomeMail`
 
+Om de sync cron aan te zetten
+`docker-compose run --rm artisan schedule:run *> $null`
