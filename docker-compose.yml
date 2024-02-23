@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 networks:
   laravel:
@@ -34,7 +34,7 @@ services:
     depends_on:
       - mysql
     entrypoint: /bin/sh
-    command: -c "while true; do php /var/www/html/artisan schedule:run; sleep 60; done"
+    command: -c "while true; do php /var/www/html/artisan schedule:run --verbose --no-interaction; sleep 60; done"
     networks:
       - laravel
 
