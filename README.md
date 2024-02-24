@@ -22,7 +22,10 @@ Then Run this:
 - `docker-compose run --rm npm run dev`
 - `docker-compose run --rm artisan migrate`
 - `docker-compose run --rm artisan db:seed`
-- `docker-compose run --rm artisan schedule:run`
+- `docker-compose up scheduler`
+
+Mocht je phpMyAdmin willen gebruiken om de DB te navigeren
+- `docker-compose up phpmyadmin`
 
 php artisan key:generate
 Run php artisan migrate --seed to create the database tables and seed the roles and users tables

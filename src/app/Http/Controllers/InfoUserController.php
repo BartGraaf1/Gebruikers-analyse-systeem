@@ -81,6 +81,8 @@ class InfoUserController extends Controller
 
         // Send an email with the password
         Mail::to($user->email)->send(new WelcomeMail($user, $password));
+        $user->notify(new \App\Notifications\WelcomeEmail($user, $password));
+
 
         return redirect('/users')->with('success', 'User was successfully added.');
     }
