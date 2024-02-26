@@ -50,6 +50,6 @@ class ProductionsManagementController extends Controller
         // Update the production with the validated data
         $production->update($validatedData);
 
-        return redirect('/productions-management')->with('success', 'Production successfully updated.');
+        return redirect('/production-management')->with('success', 'Production successfully updated.');
     }
 }

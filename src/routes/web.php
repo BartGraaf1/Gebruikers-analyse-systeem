@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\ChangePasswordController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\ResetController;
-use App\Http\Controllers\SessionsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ResetController;
+use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\ProductionsManagementController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,26 +62,28 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     // Production management
-    Route::get('/productions-management', [ProductionsManagementController::class, 'index'])->name('production-management.index');
+    Route::get('/production-management', [ProductionsManagementController::class, 'index'])->name('production-management.index');
 
     Route::get('/production-management/{production}/edit', [ProductionsManagementController::class, 'edit']);
     Route::patch('/production-management/{production}', [ProductionsManagementController::class, 'update'])->name('production.update');
 
 
     //User management
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/user-management', [UserManagementController::class, 'index'])->name('users.index');
 
-    Route::get('/user/add', [UserController::class, 'create']);
-    Route::post('/user', [UserController::class, 'store'])->name('user.store');
+    Route::get('/user-management/add', [UserManagementController::class, 'create']);
+    Route::post('/user', [UserManagementController::class, 'store'])->name('user.store');
 
-    Route::get('/user/{user}/edit', [UserController::class, 'edit']);
-    Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::get('/user-management/{user}/edit', [UserManagementController::class, 'edit']);
+    Route::patch('/user-management/{user}', [UserManagementController::class, 'update'])->name('user.update');
 
-    Route::get('/user/{user}/delete', [UserController::class, 'confirmDelete'])->name('user.confirmDelete');
-    Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/user-management/{user}/delete', [UserManagementController::class, 'confirmDelete'])->name('user.confirmDelete');
+    Route::delete('/user-management/{user}', [UserManagementController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('/user-profile', [UserController::class, 'createProfile']);
-    Route::post('/user-profile', [UserController::class, 'storeProfile']);
+
+    //User profile
+    Route::get('/user-profile', [UserProfileController::class, 'createProfile']);
+    Route::post('/user-profile', [UserProfileController::class, 'storeProfile']);
 
     Route::get('/logout', [SessionsController::class, 'destroy']);
     Route::get('/login', function () {

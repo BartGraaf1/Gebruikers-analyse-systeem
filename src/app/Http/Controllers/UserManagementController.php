@@ -12,7 +12,7 @@ use Illuminate\Support\Str; // Make sure this line is added
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail; // Assuming you have created this Mailable
 
-class UserController extends Controller
+class UserManagementController extends Controller
 {
 
     public function createProfile()
@@ -53,18 +53,16 @@ class UserController extends Controller
     public function create()
     {
         // Displays the form to create a new user
-        return view('user/user-add');
+        return view('user-management/user-add');
     }
 
     public function store(Request $request)
     {
-
-
         // Validates and stores a new user
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'phone' => 'nullable|max:50',
+            'phone' => ['nullable', 'regex:/^(\+?[1-9]\d{1,14}|0\d{9})$/'],
             'location' => 'nullable|max:255',
             'about_me' => 'nullable|max:255',
             'user_role' => 'max:1',
@@ -83,20 +81,20 @@ class UserController extends Controller
         $user->notify(new \App\Notifications\WelcomeEmail($user, $password));
 
 
-        return redirect('/users')->with('success', 'User was successfully added.');
+        return redirect('/user-management')->with('success', 'User was successfully added.');
     }
 
     public function index()
     {
         // Retrieves all user
         $users = User::all();
-        return view('user/users-overview', compact('users'));
+        return view('user-management/users-overview', compact('users'));
     }
 
     public function edit(User $user)
     {
         // Displays the form to edit an existing user
-        return view('user/user-edit', compact('user'));
+        return view('user-management/user-edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
@@ -105,20 +103,20 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|max:50',
+            'phone' => ['nullable', 'regex:/^(\+?[1-9]\d{1,14}|0\d{9})$/'],
             'location' => 'nullable|max:255',
             'user_role' => 'max:1',
         ]);
 
         $user->update($validatedData);
 
-        return redirect('/users')->with('success', 'User successfully updated.');
+        return redirect('/user-management')->with('success', 'User successfully updated.');
     }
 
     public function confirmDelete(User $user)
     {
         // Assuming 'User' is your model and it's correctly type-hinted to resolve the user instance
-        return view('user/user-delete', compact('user'));
+        return view('user-management/user-delete', compact('user'));
     }
 
 
@@ -127,6 +125,6 @@ class UserController extends Controller
         // Deletes the user
         $user->delete();
 
-        return redirect('/users')->with('success', 'User successfully deleted.');
+        return redirect('/user-management')->with('success', 'User successfully deleted.');
     }
 }
