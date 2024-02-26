@@ -80,7 +80,6 @@ class InfoUserController extends Controller
         $user = User::create($validatedData);
 
         // Send an email with the password
-        Mail::to($user->email)->send(new WelcomeMail($user, $password));
         $user->notify(new \App\Notifications\WelcomeEmail($user, $password));
 
 
