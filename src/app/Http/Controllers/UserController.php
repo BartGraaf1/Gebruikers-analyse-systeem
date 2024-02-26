@@ -12,7 +12,7 @@ use Illuminate\Support\Str; // Make sure this line is added
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail; // Assuming you have created this Mailable
 
-class InfoUserController extends Controller
+class UserController extends Controller
 {
 
     public function createProfile()
@@ -80,7 +80,8 @@ class InfoUserController extends Controller
         $user = User::create($validatedData);
 
         // Send an email with the password
-        Mail::to($user->email)->send(new WelcomeMail($user, $password));
+        $user->notify(new \App\Notifications\WelcomeEmail($user, $password));
+
 
         return redirect('/users')->with('success', 'User was successfully added.');
     }

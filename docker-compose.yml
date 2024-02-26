@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 networks:
   laravel:
@@ -20,6 +20,21 @@ services:
       - redis
       - mysql
       - mailhog
+    networks:
+      - laravel
+  scheduler:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - mysql
+    entrypoint: /bin/sh
+    command: -c "while true; do php /var/www/html/artisan schedule:run --verbose --no-interaction; sleep 60; done"
     networks:
       - laravel
 

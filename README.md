@@ -21,6 +21,11 @@ Then Run this:
 - `docker-compose run --rm composer update`
 - `docker-compose run --rm npm run dev`
 - `docker-compose run --rm artisan migrate`
+- `docker-compose run --rm artisan db:seed`
+- `docker-compose up scheduler`
+
+Mocht je phpMyAdmin willen gebruiken om de DB te navigeren
+- `docker-compose up phpmyadmin`
 
 php artisan key:generate
 Run php artisan migrate --seed to create the database tables and seed the roles and users tables
@@ -32,7 +37,8 @@ Restart Docker
 - `docker-compose down`
 - `docker-compose up -d`
 
+Om PhpMyAdmin te draaien, open de `docker-compose.yml` en druk hier op het pijltje naast PhpMyAdmin
+
 
 Misschien deze nog:
 `docker-compose run --rm artisan make:mail WelcomeMail`
-
