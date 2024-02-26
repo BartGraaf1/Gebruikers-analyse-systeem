@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InfoUserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
@@ -59,19 +59,19 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     //User management
-    Route::get('/users', [InfoUserController::class, 'index'])->name('users.index');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-    Route::get('/user/add', [InfoUserController::class, 'create']);
-    Route::post('/user', [InfoUserController::class, 'store'])->name('user.store');
+    Route::get('/user/add', [UserController::class, 'create']);
+    Route::post('/user', [UserController::class, 'store'])->name('user.store');
 
-    Route::get('/user/{user}/edit', [InfoUserController::class, 'edit']);
-    Route::patch('/user/{user}', [InfoUserController::class, 'update'])->name('user.update');
+    Route::get('/user/{user}/edit', [UserController::class, 'edit']);
+    Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
 
-    Route::get('/user/{user}/delete', [InfoUserController::class, 'confirmDelete'])->name('user.confirmDelete');
-    Route::delete('/user/{user}', [InfoUserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/user/{user}/delete', [UserController::class, 'confirmDelete'])->name('user.confirmDelete');
+    Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('/user-profile', [InfoUserController::class, 'createProfile']);
-    Route::post('/user-profile', [InfoUserController::class, 'storeProfile']);
+    Route::get('/user-profile', [UserController::class, 'createProfile']);
+    Route::post('/user-profile', [UserController::class, 'storeProfile']);
 
 
 

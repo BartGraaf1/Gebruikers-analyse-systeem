@@ -12,7 +12,7 @@ use Illuminate\Support\Str; // Make sure this line is added
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeMail; // Assuming you have created this Mailable
 
-class InfoUserController extends Controller
+class UserController extends Controller
 {
 
     public function createProfile()
