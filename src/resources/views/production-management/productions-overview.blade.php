@@ -20,10 +20,26 @@
                 <div class="card mb-4 mx-4">
                     <div class="card-header pb-0">
                         <div class="d-flex flex-row justify-content-between">
-                            <div>
+                            <div class="col-md-8">
                                 <h5 class="mb-0">All Productions</h5>
                             </div>
-                            <a href="/production/add" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; New Production</a>
+                            <div class="col-md-4">
+                                <form action="{{ route('production-management.index') }}" method="GET">
+                                    <div class="mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
+                                        <div class="nav-item d-flex align-self-end">
+                                            <a href="{{ route('production-management.index') }}" class="btn btn-secondary active mb-0 text-white" role="button" aria-pressed="true">
+                                                Clear
+                                            </a>
+                                        </div>
+                                        <div class="ms-md-3 pe-md-3 d-flex align-items-center">
+                                            <div class="input-group">
+                                                <button data-bs-toggle="tooltip" data-bs-original-title="Search productions" type="submit" class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></button>
+                                                <input value="{{ request()->query('search') }}"  type="text" name="search"  class="form-control" placeholder="Search productions" onfocus="focused(this)" onfocusout="defocused(this)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
@@ -70,11 +86,8 @@
                                             <span class="text-secondary text-xs font-weight-bold">{{ $production->created_at->format('d/m/Y') }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="/production/{{ $production->id }}/edit" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit production">
+                                            <a href="/production-management/{{ $production->id }}/edit" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit production">
                                                 <i class="fas fa-edit text-secondary"></i>
-                                            </a>
-                                            <a href="/production/{{ $production->id }}/delete" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete production">
-                                                <i class="cursor-pointer fas fa-trash text-secondary"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -82,7 +95,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-center mt-5">
                             @if ($productions->hasPages())
                                 {{ $productions->links('vendor.pagination.custom') }}
                             @endif

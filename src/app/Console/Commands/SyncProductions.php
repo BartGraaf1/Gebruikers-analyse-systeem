@@ -27,13 +27,22 @@ class SyncProductions extends Command
      */
     public function handle()
     {
+        // Fetch productions from external database
         $externalProductions = DB::connection('external_db')->table('productions')->get();
 
+        // Fetch only IDs from external productions for comparison
+        $externalProductionIds = $externalProductions->pluck('id')->all();
+
+        // Iterate over each external production and update or create in the local database
         foreach ($externalProductions as $externalProduction) {
             Production::updateOrCreate(
-                ['id' => $externalProduction->id], // Assuming each production has a unique ID
-                ['title' => $externalProduction->title]
+                ['id' => $externalProduction->id], // Unique identifier for each production
+                ['title' => $externalProduction->title] // Data to update or create
             );
         }
+
+        // Find local productions that are not in the external productions list and delete them
+        Production::whereNotIn('id', $externalProductionIds)->delete();
     }
+
 }

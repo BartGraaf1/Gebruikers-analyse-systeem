@@ -65,9 +65,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/production-management/{production}/edit', [ProductionsManagementController::class, 'edit']);
     Route::patch('/production-management/{production}', [ProductionsManagementController::class, 'update'])->name('production.update');
 
-    Route::get('/production-management/{production}/delete', [ProductionsManagementController::class, 'confirmDelete'])->name('production.confirmDelete');
-    Route::delete('/production-management/{production}', [ProductionsManagementController::class, 'destroy'])->name('production.destroy');
-
 
     //User management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -83,8 +80,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user-profile', [UserController::class, 'createProfile']);
     Route::post('/user-profile', [UserController::class, 'storeProfile']);
-
-
 
     Route::get('/logout', [SessionsController::class, 'destroy']);
     Route::get('/login', function () {

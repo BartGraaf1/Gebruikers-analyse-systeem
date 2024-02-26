@@ -8,44 +8,48 @@ use Illuminate\Validation\Rule;
 
 class ProductionsManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Retrieves all productions
-        $productions = Production::paginate(10); // or any other query that ends with paginate()
-        return view('production-management/productions-overview', compact('productions'));
-    }
+        $search = $request->query('search');
 
-    public function create()
-    {
-        // Displays the form to create a new production
-        return view('productions.create');
+        if ($search) {
+            // If there is a search term, perform the search on title and description
+            $productions = \App\Models\Production::query()
+                ->where('title', 'LIKE', "%{$search}%")
+                ->orWhere('description', 'LIKE', "%{$search}%")
+                ->orWhere('created_at', 'LIKE', "%{$search}%")
+                ->paginate(10)
+                ->appends(request()->except('page')); // This will append all query parameters except 'page' to the pagination links
+        } else {
+            // Otherwise, just paginate all productions
+            $productions = \App\Models\Production::paginate(10);
+        }
+
+        // Return the index view with the results
+        return view('production-management/productions-overview', compact('productions'));
     }
 
     public function edit(Production $production)
     {
         // Displays the form to edit an existing production
-        return view('productions.edit', compact('production'));
+        return view('production-management/production-edit', compact('production'));
     }
 
     public function update(Request $request, Production $production)
     {
-        // Validates and updates the production
+        // Validates the incoming request except the 'is_active' field
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable',
-            'is_active' => 'required|boolean',
         ]);
 
+        // Manually add the 'is_active' field to the validated data.
+        // Check if the checkbox was present in the request. If not present, default to false.
+        $validatedData['is_active'] = $request->has('is_active');
+
+        // Update the production with the validated data
         $production->update($validatedData);
 
-        return redirect('/productions')->with('success', 'Production successfully updated.');
-    }
-
-    public function destroy(Production $production)
-    {
-        // Deletes the production
-        $production->delete();
-
-        return redirect('/productions')->with('success', 'Production successfully deleted.');
+        return redirect('/productions-management')->with('success', 'Production successfully updated.');
     }
 }
