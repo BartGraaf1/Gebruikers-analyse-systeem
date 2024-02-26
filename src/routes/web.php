@@ -9,6 +9,7 @@ use App\Http\Controllers\SessionsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductionsManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('static-sign-up', function () {
 		return view('static-sign-up');
 	})->name('sign-up');
+
+
+    // Production management
+    Route::get('/productions-management', [ProductionsManagementController::class, 'index'])->name('production-management.index');
+
+    Route::get('/production-management/{production}/edit', [ProductionsManagementController::class, 'edit']);
+    Route::patch('/production-management/{production}', [ProductionsManagementController::class, 'update'])->name('production.update');
+
+    Route::get('/production-management/{production}/delete', [ProductionsManagementController::class, 'confirmDelete'])->name('production.confirmDelete');
+    Route::delete('/production-management/{production}', [ProductionsManagementController::class, 'destroy'])->name('production.destroy');
 
 
     //User management
