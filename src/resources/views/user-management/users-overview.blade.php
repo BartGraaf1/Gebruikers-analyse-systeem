@@ -25,7 +25,7 @@
                         <div>
                             <h5 class="mb-0">All Users</h5>
                         </div>
-                        <a href="/user/add" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; New User</a>
+                        <a href="/user-management/add" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; New User</a>
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -72,10 +72,10 @@
                                         <span class="text-secondary text-xs font-weight-bold">{{ $user->created_at->format('d/m/Y') }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <a href="/user/{{ $user->id }}/edit" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
+                                        <a href="/user-management/{{ $user->id }}/edit" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
                                             <i class="fas fa-user-edit text-secondary"></i>
                                         </a>
-                                        <a href="/user/{{ $user->id }}/delete" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete user">
+                                        <a href="/user-management/{{ $user->id }}/delete" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete user">
                                             <i class="cursor-pointer fas fa-trash text-secondary"></i>
                                         </a>
                                     </td>
