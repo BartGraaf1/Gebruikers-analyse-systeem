@@ -16,7 +16,6 @@ class PopulateProductionDailyStats extends Command
 
         // Define the date for which stats should be aggregated
         $yesterday = now()->subDay()->toDateString(); // For actual runs
-        $yesterday = '2024-02-22'; // For testing with a specific date
 
         // Define action IDs for stats we are interested in
         $actionIds = [

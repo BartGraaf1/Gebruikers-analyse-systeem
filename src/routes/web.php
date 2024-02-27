@@ -5,13 +5,12 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ChangePasswordController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\ProductionsManagementController;
 use App\Http\Controllers\UserManagementController;
-use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +26,8 @@ use App\Http\Controllers\UserProfileController;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/', [HomeController::class, 'home']);
-	Route::get('dashboard', function () {
-		return view('dashboard');
-	})->name('dashboard');
+    Route::redirect('/', '/dashboard');
+	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 	Route::get('billing', function () {
 		return view('billing');

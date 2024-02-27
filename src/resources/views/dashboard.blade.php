@@ -3,94 +3,44 @@
 @section('content')
 
   <div class="row">
-    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row">
-            <div class="col-8">
-              <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Money</p>
-                <h5 class="font-weight-bolder mb-0">
-                  $53,000
-                  <span class="text-success text-sm font-weight-bolder">+55%</span>
-                </h5>
+      <!-- Dynamically Generated Statistics Cards -->
+      @php
+          $stats = [
+            'totalProductions' => ['title' => "Total Productions", 'icon' => "ni-tv-2"],
+            'viewsLastDay' => ['title' => "Viewers Last Day", 'icon' => "ni-chart-bar-32"],
+            'viewsLastWeek' => ['title' => "Viewers Last Week", 'icon' => "ni-chart-bar-32"],
+            'viewsLastMonth' => ['title' => "Viewers Last Month", 'icon' => "ni-chart-bar-32"],
+          ];
+      @endphp
+
+      @foreach ($stats as $key => $info)
+          @if (isset($topRowStatistics[$key]))
+              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                  <div class="card">
+                      <div class="card-body p-3">
+                          <div class="row">
+                              <div class="col-8">
+                                  <div class="numbers">
+                                      <p class="text-sm mb-0 text-capitalize font-weight-bold">{{ $info['title'] }}</p>
+                                      <h5 class="font-weight-bolder mb-0">
+                                          {{ $topRowStatistics[$key]['value'] }}
+                                          @if (isset($topRowStatistics[$key]['change']) && !empty($topRowStatistics[$key]['change']))
+                                            <span class="text-{{ $topRowStatistics[$key]['status'] }} text-sm font-weight-bolder">{{ $topRowStatistics[$key]['change'] }}%</span>
+                                          @endif
+                                      </h5>
+                                  </div>
+                              </div>
+                              <div class="col-4 text-end">
+                                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                                      <i class="ni {{ $info['icon'] }} text-lg opacity-10" aria-hidden="true"></i>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
-            <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row">
-            <div class="col-8">
-              <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Users</p>
-                <h5 class="font-weight-bolder mb-0">
-                  2,300
-                  <span class="text-success text-sm font-weight-bolder">+3%</span>
-                </h5>
-              </div>
-            </div>
-            <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row">
-            <div class="col-8">
-              <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">New Clients</p>
-                <h5 class="font-weight-bolder mb-0">
-                  +3,462
-                  <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                </h5>
-              </div>
-            </div>
-            <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6">
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row">
-            <div class="col-8">
-              <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
-                <h5 class="font-weight-bolder mb-0">
-                  $103,430
-                  <span class="text-success text-sm font-weight-bolder">+5%</span>
-                </h5>
-              </div>
-            </div>
-            <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          @endif
+      @endforeach
   </div>
   <div class="row mt-4">
     <div class="col-12">
@@ -455,52 +405,47 @@
 @endsection
 @push('dashboard')
   <script>
+    var viewsPerMonth = @json($viewsPerMonth);
     window.onload = function() {
 
-      var ctx2 = document.getElementById("chart-line").getContext("2d");
+      var ctx = document.getElementById("chart-line").getContext("2d");
 
-      var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
+      var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
 
       gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
       gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
       gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
 
-      var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
+      var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
 
       gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
       gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
       gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
 
-      new Chart(ctx2, {
+    // Convert Laravel collection to usable chart data
+    var labels = viewsPerMonth.map(function(view) {
+        return view.month_name; // Assuming `month_name` is the format "Jan", "Feb", etc.
+    });
+
+    var data = viewsPerMonth.map(function(view) {
+        return view.total_views;
+    });
+
+    new Chart(ctx, {
         type: "line",
         data: {
-          labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          datasets: [{
-              label: "Mobile apps",
-              tension: 0.4,
-              borderWidth: 0,
-              pointRadius: 0,
-              borderColor: "#cb0c9f",
-              borderWidth: 3,
-              backgroundColor: gradientStroke1,
-              fill: true,
-              data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-              maxBarThickness: 6
-
-            },
-            {
-              label: "Websites",
-              tension: 0.4,
-              borderWidth: 0,
-              pointRadius: 0,
-              borderColor: "#3A416F",
-              borderWidth: 3,
-              backgroundColor: gradientStroke2,
-              fill: true,
-              data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-              maxBarThickness: 6
-            },
-          ],
+            labels: labels, // Use dynamic labels
+            datasets: [{
+                label: "Total Views",
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 0,
+                borderColor: "#cb0c9f",
+                backgroundColor: gradientStroke1,
+                fill: true,
+                data: data, // Use dynamic data
+                maxBarThickness: 6
+            }],
         },
         options: {
           responsive: true,
