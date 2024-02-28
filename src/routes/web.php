@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductionController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\ProductionsManagementController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,34 +31,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::redirect('/', '/dashboard');
 	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-	Route::get('billing', function () {
-		return view('billing');
-	})->name('billing');
 
-	Route::get('profile', function () {
+    // Web route example
+    Route::get('/production/overview', [ProductionController::class, 'overview'])->name('production.overview');
+
+
+    Route::get('profile', function () {
 		return view('profile');
 	})->name('profile');
 
-	Route::get('rtl', function () {
-		return view('rtl');
-	})->name('rtl');
+    //User profile
+    Route::get('/user-profile', [UserProfileController::class, 'createProfile']);
+    Route::post('/user-profile', [UserProfileController::class, 'storeProfile']);
 
-	Route::get('tables', function () {
-		return view('tables');
-	})->name('tables');
-
-    Route::get('virtual-reality', function () {
-		return view('virtual-reality');
-	})->name('virtual-reality');
-
-    Route::get('static-sign-in', function () {
-		return view('static-sign-in');
-	})->name('sign-in');
-
-    Route::get('static-sign-up', function () {
-		return view('static-sign-up');
+    Route::get('/logout', [SessionsController::class, 'destroy']);
+    Route::get('/login', function () {
+		return view('dashboard');
 	})->name('sign-up');
-
 
     Route::group(['middleware' => ['auth', 'checkadmin']], function () {
         // Production management
@@ -78,15 +69,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/user-management/{user}/delete', [UserManagementController::class, 'confirmDelete'])->name('user.confirmDelete');
         Route::delete('/user-management/{user}', [UserManagementController::class, 'destroy'])->name('user.destroy');
     });
-
-    //User profile
-    Route::get('/user-profile', [UserProfileController::class, 'createProfile']);
-    Route::post('/user-profile', [UserProfileController::class, 'storeProfile']);
-
-    Route::get('/logout', [SessionsController::class, 'destroy']);
-    Route::get('/login', function () {
-		return view('dashboard');
-	})->name('sign-up');
 });
 
 
