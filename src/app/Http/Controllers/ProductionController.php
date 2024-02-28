@@ -111,4 +111,9 @@ class ProductionController extends Controller
         // Return the index view with the results
         return view('production/productions-overview', compact('productions', 'results'));
     }
+
+
+    public function productionStatistics(Request $request){
+        return view('production/production-statistics');
+    }
 }
