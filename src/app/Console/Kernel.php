@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\SyncProductions::class,
+        \App\Console\Commands\PopulateProductionDailyStats::class,
     ];
 
 
@@ -25,10 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $hour = config('app.hour');
-        $min = config('app.min');
-        $scheduledInterval = $hour !== '' ? ( ($min !== '' && $min != 0) ?  $min .' */'. $hour .' * * *' : '0 */'. $hour .' * * *') : '*/'. $min .' * * * *';
         $schedule->command('app:sync-productions')->everyMinute()->withoutOverlapping();
+        $schedule->command('production:populate-daily-stats')->daily()->withoutOverlapping();
     }
 
     /**
