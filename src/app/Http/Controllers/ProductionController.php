@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Production;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -113,7 +114,19 @@ class ProductionController extends Controller
     }
 
 
-    public function productionStatistics(Request $request){
-        return view('production/production-statistics');
+    public function productionStatistics(Request $request, $production){
+
+        // Fetch the production details
+        $production = Production::findOrFail($production);
+
+        // Fetch fragments associated with this production
+        // This assumes you have a method to directly query the external database or a local representation of it
+        $fragments = DB::connection('external_db') // 'external' is a placeholder for your actual external database connection name
+        ->table('fragments')
+            ->where('production_id', $production)
+            ->get();
+        
+        // Return the fragments and their statistics to the view
+        return view('production/production-statistics', compact('fragments'));
     }
 }

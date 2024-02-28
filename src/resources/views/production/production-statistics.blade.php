@@ -14,14 +14,13 @@
             </div>
         @endif
         <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card z-index-2">
+            <div class="col-md-6 z-index-3">
+                <div class="card">
                     <input class="form-control datepicker" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
-                    <select multiple class="form-control js-choice" name="choices-button" id="choices-button" placeholder="Departure">
-                        <option value="Choice 1" selected="">Brazil</option>
-                        <option value="Choice 2">Bucharest</option>
-                        <option value="Choice 3">London</option>
-                        <option value="Choice 4">USA</option>
+                    <select multiple class="form-control js-choice" name="choices-button[]" id="choices-button" placeholder="Departure">
+                        @foreach ($fragments as $fragment)
+                            <option value="{{ $fragment->id }}">{{ $fragment->title }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -170,6 +169,7 @@
 
     const element = document.querySelector('.js-choice');
     const choices = new Choices(element);
+
 
     // Line chart
     var ctx1 = document.getElementById("line-chart").getContext("2d");
