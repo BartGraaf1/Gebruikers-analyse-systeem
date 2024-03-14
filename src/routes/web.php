@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Web route example
     Route::get('/production/overview', [ProductionController::class, 'overview'])->name('production.overview');
+    Route::get('/production/{production}/analyse', [ProductionController::class, 'productionStatistics']);
 
 
     Route::get('profile', function () {
