@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Production;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\Production;
+use App\Models\PvpProduction;
+use App\Models\ProductionDailyStat;
+use App\Models\Fragment;
 
 class ProductionController extends Controller
 {
@@ -114,19 +117,62 @@ class ProductionController extends Controller
     }
 
 
-    public function productionStatistics(Request $request, $production){
+    public function productionStatistics(Request $request, $productionId)
+    {
 
-        // Fetch the production details
-        $production = Production::findOrFail($production);
+        // Check if Date isset else take the last 14 days
+        $dateRange = $request->input('statistics_date');
+        if ($dateRange) {
+            [$startDate, $endDate] = explode(' to ', $dateRange);
+            // Convert the string dates to Carbon instances
+            $startDate = Carbon::createFromFormat('Y-m-d', trim($startDate))->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', trim($endDate))->endOfDay();
+        } else {
+            $endDate = now();
+            $startDate = now()->subDays(14);
+        }
 
-        // Fetch fragments associated with this production
-        // This assumes you have a method to directly query the external database or a local representation of it
-        $fragments = DB::connection('external_db') // 'external' is a placeholder for your actual external database connection name
-        ->table('fragments')
-            ->where('production_id', $production)
+        // Ensure dates are in 'Y-m-d' format for the database query
+        $startDate = $startDate->format('Y-m-d');
+        $endDate = $endDate->format('Y-m-d');
+
+        // Fetch the production details from the local database
+        $production = Production::findOrFail($productionId);
+
+        // Fetch the corresponding `fragment_start` from the external database
+        $pvpProduction = PvpProduction::find($productionId);
+        if (!$pvpProduction) {
+            abort(404, 'Production not found in external database.');
+        }
+
+        // Fetch all connected fragments to the production
+        $allFragments = Fragment::where('production_id', $productionId)->get();
+
+        // Check if specific fragments are selected in the request, otherwise use fragment_start
+        $fragmentIds = $request->input('statistics_fragments', explode(',', $pvpProduction->fragment_start));
+
+        //TODO check if the fragment is linked to the production
+
+        // Ensure $fragmentIds is always an array
+        if (!is_array($fragmentIds)) {
+            $fragmentIds = [$fragmentIds];
+        }
+
+        // Normalize $fragmentIds to ensure it's an array even if only one fragment ID is provided
+        $fragmentIds = is_array($fragmentIds) ? $fragmentIds : [$fragmentIds];
+
+
+        // Fetch stats from the local database based on these fragment IDs
+        $productionDailyStats = ProductionDailyStat::whereIn('fragment_id', $fragmentIds)
+            ->whereDate('day', '>=', $startDate)
+            ->whereDate('day', '<=', $endDate)
             ->get();
-        
-        // Return the fragments and their statistics to the view
-        return view('production/production-statistics', compact('fragments'));
+
+        dd($productionDailyStats);
+
+
+        // Assuming you're passing this data to a view
+        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments'));
+
     }
 }

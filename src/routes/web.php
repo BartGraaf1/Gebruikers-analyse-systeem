@@ -32,10 +32,13 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
-    // Web route example
+    // Web routes
     Route::get('/production/overview', [ProductionController::class, 'overview'])->name('production.overview');
     Route::get('/production/{production}/analyse', [ProductionController::class, 'productionStatistics']);
 
+
+    // For handling the form submission
+    Route::get('/production/{production}/analyse', [ProductionController::class, 'productionStatistics'])->name('production.analyse');
 
     Route::get('profile', function () {
 		return view('profile');

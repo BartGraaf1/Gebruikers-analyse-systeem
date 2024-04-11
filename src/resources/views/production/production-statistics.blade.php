@@ -16,12 +16,18 @@
         <div class="row mt-4">
             <div class="col-md-6 z-index-3">
                 <div class="card">
-                    <input class="form-control datepicker" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
-                    <select multiple class="form-control js-choice" name="choices-button[]" id="choices-button" placeholder="Departure">
-                        @foreach ($fragments as $fragment)
-                            <option value="{{ $fragment->id }}">{{ $fragment->title }}</option>
-                        @endforeach
-                    </select>
+                    <form action="{{ route('production.analyse', ['production' => $production]) }}" method="GET">
+                        @csrf
+                        <div class="card">
+                            <input name="statistics_date" class="form-control datepicker" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
+                            <select name=statistics_fragments[]" multiple class="form-control js-choice" id="choices-button" placeholder="Departure">
+                                @foreach ($allFragments as $fragment)
+                                    <option value="{{ $fragment->id }}">{{ $fragment->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
                 </div>
             </div>
         </div>
