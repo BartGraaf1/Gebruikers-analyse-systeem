@@ -24,6 +24,10 @@ Then Run this:
 - `docker-compose run --rm artisan db:seed`
 - `docker-compose up scheduler`
 
+
+Om de fragments te syncen
+- `docker-compose run --rm artisan app:populate-production-stats-catchup 400`
+
 Mocht je phpMyAdmin willen gebruiken om de DB te navigeren
 - `docker-compose up phpmyadmin`
 
