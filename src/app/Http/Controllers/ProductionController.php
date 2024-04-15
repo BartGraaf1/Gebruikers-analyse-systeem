@@ -181,6 +181,46 @@ class ProductionController extends Controller
                                     AVG(watched_till_percentage_100) as avg_watched_100')
             ->get();
 
+        $processedStats  = $productionDailyStats->map(function ($stat) {
+            $total_viewers = $stat->avg_watched_0; // Start with the total number of viewers at 0%
+            $weighted_sum = 0;
+            $last_count = $total_viewers;
+
+            // Iterate through each 10% interval up to 100%
+            for ($i = 10; $i <= 100; $i += 10) {
+                $current_key = "avg_watched_$i";
+                $current_viewers = isset($stat->$current_key) ? $stat->$current_key : 0;
+
+                // Calculate the number of viewers who stopped at this specific interval
+                $viewers_stopped = $last_count - $current_viewers;
+                $weighted_sum += $viewers_stopped * ($i - 10); // Apply the midpoint of the previous range
+
+                // Update the last_count for the next iteration
+                $last_count = $current_viewers;
+
+                // Break early if no viewers reach further milestones
+                if ($current_viewers == 0) {
+                    break;
+                }
+            }
+
+            // Include the last set of viewers who reached the final milestone
+            if ($last_count > 0) {
+                $weighted_sum += $last_count * ($i - 10); // Use the last valid milestone
+            }
+
+            // Calculate the average viewing percentage
+            $stat->average_viewing_percentage = $total_viewers > 0 ? $weighted_sum / $total_viewers : 0;
+
+            return $stat;
+        });
+
+
+
+
+
+        dd($processedStats);
+
 
         $labels = $productionDailyStats->pluck('day')->map(function ($date) {
             // Convert string to Carbon instance first

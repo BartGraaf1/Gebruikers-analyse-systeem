@@ -91,7 +91,7 @@
                         </div>
                         <div class="card-body p-3">
                             <div class="chart">
-                                <canvas id="mixed-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                                <canvas id="viewing-range-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                             </div>
                         </div>
                     </div>
@@ -603,7 +603,7 @@
     });
 
     // Mixed chart
-    var ctx7 = document.getElementById("mixed-chart").getContext("2d");
+    var ctx7 = document.getElementById("viewing-range-chart").getContext("2d");
 
     new Chart(ctx7, {
         data: {
@@ -693,6 +693,61 @@
             },
         },
     });
+
+    {{--var ctx7 = document.getElementById("viewing-range-chart").getContext("2d");--}}
+    {{--var labels = @json($productionDailyStats->pluck('day'));--}}
+    {{--var viewersData = @json($productionDailyStats->pluck('total_views')); // Adjust according to your actual viewers data--}}
+    {{--var differenceData10_20 = @json($percentagesDifferences->pluck('difference_10_20'));--}}
+
+    {{--new Chart(ctx7, {--}}
+    {{--    type: 'bar',--}}
+    {{--    data: {--}}
+    {{--        labels: labels,--}}
+    {{--        datasets: [{--}}
+    {{--            type: 'line',--}}
+    {{--            label: 'Viewers',--}}
+    {{--            data: viewersData,--}}
+    {{--            borderColor: '#cb0c9f',--}}
+    {{--            backgroundColor: 'rgba(203, 12, 159, 0.1)',--}}
+    {{--            borderWidth: 3--}}
+    {{--        }, {--}}
+    {{--            type: 'bar',--}}
+    {{--            label: 'Difference 10% to 20%',--}}
+    {{--            data: differenceData10_20,--}}
+    {{--            backgroundColor: '#3A416F',--}}
+    {{--            maxBarThickness: 10--}}
+    {{--        }]--}}
+    {{--    },--}}
+    {{--    options: {--}}
+    {{--        responsive: true,--}}
+    {{--        maintainAspectRatio: false,--}}
+    {{--        plugins: {--}}
+    {{--            legend: {--}}
+    {{--                display: true--}}
+    {{--            }--}}
+    {{--        },--}}
+    {{--        scales: {--}}
+    {{--            y: {--}}
+    {{--                grid: {--}}
+    {{--                    drawBorder: false,--}}
+    {{--                    display: true--}}
+    {{--                },--}}
+    {{--                ticks: {--}}
+    {{--                    display: true--}}
+    {{--                }--}}
+    {{--            },--}}
+    {{--            x: {--}}
+    {{--                grid: {--}}
+    {{--                    drawBorder: false,--}}
+    {{--                    display: true--}}
+    {{--                },--}}
+    {{--                ticks: {--}}
+    {{--                    display: true--}}
+    {{--                }--}}
+    {{--            }--}}
+    {{--        }--}}
+    {{--    }--}}
+    {{--});--}}
 
     // Bubble chart
     var ctx8 = document.getElementById("bubble-chart").getContext("2d");
