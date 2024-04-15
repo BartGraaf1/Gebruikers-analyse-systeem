@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductionDailyStat extends Model
 {
-
-    // Define any relationships or other model properties here
+    protected $casts = [
+        'day' => 'date',  // Ensuring 'day' is treated as a date
+    ];
+    
 }

@@ -166,13 +166,32 @@ class ProductionController extends Controller
         $productionDailyStats = ProductionDailyStat::whereIn('fragment_id', $fragmentIds)
             ->whereDate('day', '>=', $startDate)
             ->whereDate('day', '<=', $endDate)
+            ->groupBy('day')
+            ->selectRaw('day, SUM(views) as total_views, SUM(`load`) as total_load,
+                                    AVG(watched_till_percentage_0) as avg_watched_0,
+                                    AVG(watched_till_percentage_10) as avg_watched_10,
+                                    AVG(watched_till_percentage_20) as avg_watched_20,
+                                    AVG(watched_till_percentage_30) as avg_watched_30,
+                                    AVG(watched_till_percentage_40) as avg_watched_40,
+                                    AVG(watched_till_percentage_50) as avg_watched_50,
+                                    AVG(watched_till_percentage_60) as avg_watched_60,
+                                    AVG(watched_till_percentage_70) as avg_watched_70,
+                                    AVG(watched_till_percentage_80) as avg_watched_80,
+                                    AVG(watched_till_percentage_90) as avg_watched_90,
+                                    AVG(watched_till_percentage_100) as avg_watched_100')
             ->get();
 
-        dd($productionDailyStats);
 
+        $labels = $productionDailyStats->pluck('day')->map(function ($date) {
+            // Convert string to Carbon instance first
+            return Carbon::parse($date)->format('M d'); // Formatting date as 'Mon 01'
+        });
 
-        // Assuming you're passing this data to a view
-        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments'));
+        $totalViews = $productionDailyStats->pluck('total_views');
+        $totalLoad = $productionDailyStats->pluck('total_load');
+
+        // Pass these arrays to your view
+        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments', 'labels', 'totalViews', 'totalLoad'));
 
     }
 }

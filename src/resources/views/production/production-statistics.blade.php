@@ -35,11 +35,11 @@
             <div class="col-md-6">
                 <div class="card z-index-2">
                     <div class="card-header p-3 pb-0">
-                        <h6>Line chart</h6>
+                        <h6>Loads + viewers</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
-                            <canvas id="line-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                            <canvas id="loads-&-viewers-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                         </div>
                     </div>
                 </div>
@@ -178,56 +178,44 @@
 
 
     // Line chart
-    var ctx1 = document.getElementById("line-chart").getContext("2d");
+    var ctx1 = document.getElementById("loads-&-viewers-chart").getContext("2d");
+    var labels = @json($labels);
+    var totalViews = @json($totalViews);
+    var totalLoad = @json($totalLoad);
 
     new Chart(ctx1, {
         type: "line",
         data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: labels, // Use dynamic labels from the server
             datasets: [{
-                label: "Organic Search",
+                label: "Total Views",
                 tension: 0.4,
-                borderWidth: 0,
+                borderWidth: 3,
                 pointRadius: 2,
                 pointBackgroundColor: "#cb0c9f",
                 borderColor: "#cb0c9f",
-                borderWidth: 3,
-                backgroundColor: gradientStroke1,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                backgroundColor: "rgba(203, 12, 159, 0.1)", // Use a lighter color or gradient
+                data: totalViews, // Use dynamic data from the server
                 maxBarThickness: 6
             },
                 {
-                    label: "Referral",
+                    label: "Total Load",
                     tension: 0.4,
-                    borderWidth: 0,
+                    borderWidth: 3,
                     pointRadius: 2,
                     pointBackgroundColor: "#3A416F",
                     borderColor: "#3A416F",
-                    borderWidth: 3,
-                    backgroundColor: gradientStroke2,
-                    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+                    backgroundColor: "rgba(58, 65, 111, 0.1)", // Use a lighter color or gradient
+                    data: totalLoad, // Use dynamic data from the server
                     maxBarThickness: 6
-                },
-                {
-                    label: "Direct",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 2,
-                    pointBackgroundColor: "#17c1e8",
-                    borderColor: "#17c1e8",
-                    borderWidth: 3,
-                    backgroundColor: gradientStroke2,
-                    data: [40, 80, 70, 90, 30, 90, 140, 130, 200],
-                    maxBarThickness: 6
-                },
-            ],
+                }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: true, // Set this to true to show the legend
                 }
             },
             interaction: {
