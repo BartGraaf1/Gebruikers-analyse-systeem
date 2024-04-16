@@ -35,11 +35,11 @@
             <div class="col-md-6">
                 <div class="card z-index-2">
                     <div class="card-header p-3 pb-0">
-                        <h6>Line chart</h6>
+                        <h6>Loads + viewers</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
-                            <canvas id="line-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                            <canvas id="loads-&-viewers-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                         </div>
                     </div>
                 </div>
@@ -47,11 +47,11 @@
             <div class="col-md-6 mt-md-0 mt-4">
                 <div class="card z-index-2">
                     <div class="card-header p-3 pb-0">
-                        <h6>Line chart with gradient</h6>
+                        <h6>Viewing range visualized</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
-                            <canvas id="line-chart-gradient" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                            <canvas id="viewing-range-sum" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                         </div>
                     </div>
                 </div>
@@ -61,11 +61,11 @@
                 <div class="col-md-6">
                     <div class="card z-index-2">
                         <div class="card-header p-3 pb-0">
-                            <h6>Bar chart</h6>
+                            <h6>Average viewing range</h6>
                         </div>
                         <div class="card-body p-3">
                             <div class="chart">
-                                <canvas id="bar-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                                <canvas id="average-viewing-range" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                             </div>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                         </div>
                         <div class="card-body p-3">
                             <div class="chart">
-                                <canvas id="mixed-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                                <canvas id="viewing-range-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                             </div>
                         </div>
                     </div>
@@ -178,56 +178,44 @@
 
 
     // Line chart
-    var ctx1 = document.getElementById("line-chart").getContext("2d");
+    var ctx1 = document.getElementById("loads-&-viewers-chart").getContext("2d");
+    var labels = @json($labels);
+    var totalViews = @json($totalViews);
+    var totalLoad = @json($totalLoad);
 
     new Chart(ctx1, {
         type: "line",
         data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: labels, // Use dynamic labels from the server
             datasets: [{
-                label: "Organic Search",
+                label: "Total Views",
                 tension: 0.4,
-                borderWidth: 0,
+                borderWidth: 3,
                 pointRadius: 2,
                 pointBackgroundColor: "#cb0c9f",
                 borderColor: "#cb0c9f",
-                borderWidth: 3,
-                backgroundColor: gradientStroke1,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                backgroundColor: "rgba(203, 12, 159, 0.1)", // Use a lighter color or gradient
+                data: totalViews, // Use dynamic data from the server
                 maxBarThickness: 6
             },
                 {
-                    label: "Referral",
+                    label: "Total Load",
                     tension: 0.4,
-                    borderWidth: 0,
+                    borderWidth: 3,
                     pointRadius: 2,
                     pointBackgroundColor: "#3A416F",
                     borderColor: "#3A416F",
-                    borderWidth: 3,
-                    backgroundColor: gradientStroke2,
-                    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+                    backgroundColor: "rgba(58, 65, 111, 0.1)", // Use a lighter color or gradient
+                    data: totalLoad, // Use dynamic data from the server
                     maxBarThickness: 6
-                },
-                {
-                    label: "Direct",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 2,
-                    pointBackgroundColor: "#17c1e8",
-                    borderColor: "#17c1e8",
-                    borderWidth: 3,
-                    backgroundColor: gradientStroke2,
-                    data: [40, 80, 70, 90, 30, 90, 140, 130, 200],
-                    maxBarThickness: 6
-                },
-            ],
+                }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: true, // Set this to true to show the legend
                 }
             },
             interaction: {
@@ -279,51 +267,34 @@
         },
     });
 
-    // Line chart with gradient
-    var ctx2 = document.getElementById("line-chart-gradient").getContext("2d");
 
+    var watchedData = @json($watchedTillPercentageTotals);
+
+    // Extract labels and data from watchedData
+    var labels = Object.keys(watchedData).map(key => key.replace('avg_watched_', '') + '%');
+    var data = Object.values(watchedData);
+
+    var ctx2 = document.getElementById("viewing-range-sum").getContext("2d");
     var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
-
     gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
     gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-    gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
-
-    var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
-    gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-    gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+    gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
 
     new Chart(ctx2, {
         type: "line",
         data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: labels,  // Use extracted labels here
             datasets: [{
-                label: "Mobile apps",
+                label: "Watched Till Percentage",
                 tension: 0.4,
-                borderWidth: 0,
+                borderWidth: 3,
                 pointRadius: 0,
                 borderColor: "#cb0c9f",
-                borderWidth: 3,
                 backgroundColor: gradientStroke1,
                 fill: true,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                data: data,  // Use extracted data here
                 maxBarThickness: 6
-
-            },
-                {
-                    label: "Websites",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#3A416F",
-                    borderWidth: 3,
-                    backgroundColor: gradientStroke2,
-                    fill: true,
-                    data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-                    maxBarThickness: 6
-                },
-            ],
+            }],
         },
         options: {
             responsive: true,
@@ -498,20 +469,25 @@
         },
     });
 
+
+    var labels = @json($labels);
+    var processedStats = @json($processedStats);
+    var averages = processedStats.map(stat => stat.average_viewing_percentage);
+
     // Bar chart
-    var ctx5 = document.getElementById("bar-chart").getContext("2d");
+    var ctx5 = document.getElementById("average-viewing-range").getContext("2d");
 
     new Chart(ctx5, {
         type: "bar",
         data: {
-            labels: ['16-20', '21-25', '26-30', '31-36', '36-42', '42+'],
+            labels: labels,
             datasets: [{
-                label: "Sales by age",
+                label: "Average viewing range of this day:",
                 weight: 5,
                 borderWidth: 0,
                 borderRadius: 4,
                 backgroundColor: '#3A416F',
-                data: [15, 20, 12, 60, 20, 15],
+                data: averages,
                 fill: false,
                 maxBarThickness: 35
             }],
@@ -615,7 +591,7 @@
     });
 
     // Mixed chart
-    var ctx7 = document.getElementById("mixed-chart").getContext("2d");
+    var ctx7 = document.getElementById("viewing-range-chart").getContext("2d");
 
     new Chart(ctx7, {
         data: {
@@ -705,6 +681,61 @@
             },
         },
     });
+
+    {{--var ctx7 = document.getElementById("viewing-range-chart").getContext("2d");--}}
+    {{--var labels = @json($productionDailyStats->pluck('day'));--}}
+    {{--var viewersData = @json($productionDailyStats->pluck('total_views')); // Adjust according to your actual viewers data--}}
+    {{--var differenceData10_20 = @json($percentagesDifferences->pluck('difference_10_20'));--}}
+
+    {{--new Chart(ctx7, {--}}
+    {{--    type: 'bar',--}}
+    {{--    data: {--}}
+    {{--        labels: labels,--}}
+    {{--        datasets: [{--}}
+    {{--            type: 'line',--}}
+    {{--            label: 'Viewers',--}}
+    {{--            data: viewersData,--}}
+    {{--            borderColor: '#cb0c9f',--}}
+    {{--            backgroundColor: 'rgba(203, 12, 159, 0.1)',--}}
+    {{--            borderWidth: 3--}}
+    {{--        }, {--}}
+    {{--            type: 'bar',--}}
+    {{--            label: 'Difference 10% to 20%',--}}
+    {{--            data: differenceData10_20,--}}
+    {{--            backgroundColor: '#3A416F',--}}
+    {{--            maxBarThickness: 10--}}
+    {{--        }]--}}
+    {{--    },--}}
+    {{--    options: {--}}
+    {{--        responsive: true,--}}
+    {{--        maintainAspectRatio: false,--}}
+    {{--        plugins: {--}}
+    {{--            legend: {--}}
+    {{--                display: true--}}
+    {{--            }--}}
+    {{--        },--}}
+    {{--        scales: {--}}
+    {{--            y: {--}}
+    {{--                grid: {--}}
+    {{--                    drawBorder: false,--}}
+    {{--                    display: true--}}
+    {{--                },--}}
+    {{--                ticks: {--}}
+    {{--                    display: true--}}
+    {{--                }--}}
+    {{--            },--}}
+    {{--            x: {--}}
+    {{--                grid: {--}}
+    {{--                    drawBorder: false,--}}
+    {{--                    display: true--}}
+    {{--                },--}}
+    {{--                ticks: {--}}
+    {{--                    display: true--}}
+    {{--                }--}}
+    {{--            }--}}
+    {{--        }--}}
+    {{--    }--}}
+    {{--});--}}
 
     // Bubble chart
     var ctx8 = document.getElementById("bubble-chart").getContext("2d");

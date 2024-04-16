@@ -166,13 +166,73 @@ class ProductionController extends Controller
         $productionDailyStats = ProductionDailyStat::whereIn('fragment_id', $fragmentIds)
             ->whereDate('day', '>=', $startDate)
             ->whereDate('day', '<=', $endDate)
+            ->groupBy('day')
+            ->selectRaw('day, SUM(views) as total_views, SUM(`load`) as total_load,
+                                    SUM(watched_till_percentage_0) as avg_watched_0,
+                                    SUM(watched_till_percentage_10) as avg_watched_10,
+                                    SUM(watched_till_percentage_20) as avg_watched_20,
+                                    SUM(watched_till_percentage_30) as avg_watched_30,
+                                    SUM(watched_till_percentage_40) as avg_watched_40,
+                                    SUM(watched_till_percentage_50) as avg_watched_50,
+                                    SUM(watched_till_percentage_60) as avg_watched_60,
+                                    SUM(watched_till_percentage_70) as avg_watched_70,
+                                    SUM(watched_till_percentage_80) as avg_watched_80,
+                                    SUM(watched_till_percentage_90) as avg_watched_90,
+                                    SUM(watched_till_percentage_100) as avg_watched_100')
             ->get();
 
-        dd($productionDailyStats);
+        $processedStats  = $productionDailyStats->map(function ($stat) {
+            $total_viewers = $stat->avg_watched_0; // Start with the total number of viewers at 0%
+            $weighted_sum = 0;
+            $last_count = $total_viewers;
+
+            // Iterate through each 10% interval up to 100%
+            for ($i = 10; $i <= 100; $i += 10) {
+                $current_key = "avg_watched_$i";
+                $current_viewers = isset($stat->$current_key) ? $stat->$current_key : 0;
+
+                // Calculate the number of viewers who stopped at this specific interval
+                $viewers_stopped = $last_count - $current_viewers;
+                $weighted_sum += $viewers_stopped * ($i - 10); // Apply the midpoint of the previous range
+
+                // Update the last_count for the next iteration
+                $last_count = $current_viewers;
+
+                // Break early if no viewers reach further milestones
+                if ($current_viewers == 0) {
+                    break;
+                }
+            }
+
+            // Include the last set of viewers who reached the final milestone
+            if ($last_count > 0) {
+                $weighted_sum += $last_count * ($i - 10); // Use the last valid milestone
+            }
+
+            // Calculate the average viewing percentage
+            $stat->average_viewing_percentage = $total_viewers > 0 ? $weighted_sum / $total_viewers : 0;
+
+            return $stat;
+        });
 
 
-        // Assuming you're passing this data to a view
-        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments'));
+        // Calculate the total for each watched percentage
+        $watchedTillPercentageTotals = [];
+        for ($i = 0; $i <= 100; $i += 10) {
+            $key = "avg_watched_$i";
+            $watchedTillPercentageTotals[$key] = $productionDailyStats->sum($key);
+        }
+
+        $labels = $productionDailyStats->pluck('day')->map(function ($date) {
+            // Convert string to Carbon instance firsts
+            return Carbon::parse($date)->format('M d'); // Formatting date as 'Mon 01'
+        });
+
+        $totalViews = $productionDailyStats->pluck('total_views');
+        $totalLoad = $productionDailyStats->pluck('total_load');
+
+        // Pass these arrays to your view
+        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments', 'labels', 'totalViews', 'totalLoad', 'processedStats', 'watchedTillPercentageTotals'));
 
     }
 }
