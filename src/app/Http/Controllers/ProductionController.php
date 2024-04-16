@@ -168,17 +168,17 @@ class ProductionController extends Controller
             ->whereDate('day', '<=', $endDate)
             ->groupBy('day')
             ->selectRaw('day, SUM(views) as total_views, SUM(`load`) as total_load,
-                                    AVG(watched_till_percentage_0) as avg_watched_0,
-                                    AVG(watched_till_percentage_10) as avg_watched_10,
-                                    AVG(watched_till_percentage_20) as avg_watched_20,
-                                    AVG(watched_till_percentage_30) as avg_watched_30,
-                                    AVG(watched_till_percentage_40) as avg_watched_40,
-                                    AVG(watched_till_percentage_50) as avg_watched_50,
-                                    AVG(watched_till_percentage_60) as avg_watched_60,
-                                    AVG(watched_till_percentage_70) as avg_watched_70,
-                                    AVG(watched_till_percentage_80) as avg_watched_80,
-                                    AVG(watched_till_percentage_90) as avg_watched_90,
-                                    AVG(watched_till_percentage_100) as avg_watched_100')
+                                    SUM(watched_till_percentage_0) as avg_watched_0,
+                                    SUM(watched_till_percentage_10) as avg_watched_10,
+                                    SUM(watched_till_percentage_20) as avg_watched_20,
+                                    SUM(watched_till_percentage_30) as avg_watched_30,
+                                    SUM(watched_till_percentage_40) as avg_watched_40,
+                                    SUM(watched_till_percentage_50) as avg_watched_50,
+                                    SUM(watched_till_percentage_60) as avg_watched_60,
+                                    SUM(watched_till_percentage_70) as avg_watched_70,
+                                    SUM(watched_till_percentage_80) as avg_watched_80,
+                                    SUM(watched_till_percentage_90) as avg_watched_90,
+                                    SUM(watched_till_percentage_100) as avg_watched_100')
             ->get();
 
         $processedStats  = $productionDailyStats->map(function ($stat) {
@@ -216,14 +216,15 @@ class ProductionController extends Controller
         });
 
 
-
-
-
-        dd($processedStats);
-
+        // Calculate the total for each watched percentage
+        $watchedTillPercentageTotals = [];
+        for ($i = 0; $i <= 100; $i += 10) {
+            $key = "avg_watched_$i";
+            $watchedTillPercentageTotals[$key] = $productionDailyStats->sum($key);
+        }
 
         $labels = $productionDailyStats->pluck('day')->map(function ($date) {
-            // Convert string to Carbon instance first
+            // Convert string to Carbon instance firsts
             return Carbon::parse($date)->format('M d'); // Formatting date as 'Mon 01'
         });
 
@@ -231,7 +232,7 @@ class ProductionController extends Controller
         $totalLoad = $productionDailyStats->pluck('total_load');
 
         // Pass these arrays to your view
-        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments', 'labels', 'totalViews', 'totalLoad'));
+        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments', 'labels', 'totalViews', 'totalLoad', 'processedStats', 'watchedTillPercentageTotals'));
 
     }
 }
