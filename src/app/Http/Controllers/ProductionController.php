@@ -7,6 +7,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Production;
 use App\Models\PvpProduction;
+use App\Models\PvpEvent;
+use App\Models\PvpViewer;
 use App\Models\ProductionDailyStat;
 use App\Models\Fragment;
 
@@ -160,6 +162,12 @@ class ProductionController extends Controller
 
         // Normalize $fragmentIds to ensure it's an array even if only one fragment ID is provided
         $fragmentIds = is_array($fragmentIds) ? $fragmentIds : [$fragmentIds];
+
+
+
+        //THIS IS WHERE YOU NEED TO GET THE Browser and Device data
+
+
 
 
         // Fetch stats from the local database based on these fragment IDs
