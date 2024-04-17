@@ -65,6 +65,9 @@ class PopulateProductionDailyStats extends Command
                 }
             }
 
+            // Since 'views' and 'watched_till_percentage_0' are the same, assign the same value to both
+            $counts['watched_till_percentage_0'] = $counts['views'];
+
             // Prepare data for insert/update
             $dataToUpdate = [
                 'day' => $yesterday,
