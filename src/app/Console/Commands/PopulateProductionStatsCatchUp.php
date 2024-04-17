@@ -73,12 +73,25 @@ class PopulateProductionStatsCatchUp extends Command
                     }
                 }
 
+                // Since 'views' and 'watched_till_percentage_0' are the same, assign the same value to both
+                $counts['watched_till_percentage_0'] = $counts['views'];
+
                 // Prepare data for insert/update
                 $dataToUpdate = [
                     'day' => $date,
                     'load' => $counts['load'],
                     'views' => $counts['views'],
-                    // Include other stats here...
+                    'watched_till_percentage_0' => $counts['watched_till_percentage_0'],
+                    'watched_till_percentage_10' => $counts['watched_till_percentage_10'],
+                    'watched_till_percentage_20' => $counts['watched_till_percentage_20'],
+                    'watched_till_percentage_30' => $counts['watched_till_percentage_30'],
+                    'watched_till_percentage_40' => $counts['watched_till_percentage_40'],
+                    'watched_till_percentage_50' => $counts['watched_till_percentage_50'],
+                    'watched_till_percentage_60' => $counts['watched_till_percentage_60'],
+                    'watched_till_percentage_70' => $counts['watched_till_percentage_70'],
+                    'watched_till_percentage_80' => $counts['watched_till_percentage_80'],
+                    'watched_till_percentage_90' => $counts['watched_till_percentage_90'],
+                    'watched_till_percentage_100' => $counts['watched_till_percentage_100'],
                     'updated_at' => now(),
                 ];
 
