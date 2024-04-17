@@ -84,6 +84,19 @@
                 </div>
             </div>
         </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card z-index-2">
+                <div class="card-header p-3 pb-0">
+                    <h6>Pie chart</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="pie-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -292,6 +305,64 @@
                 borderWidth: 2,
                 backgroundColor: ['#2152ff', '#3A416F', '#f53939', '#a8b8d8', '#cb0c9f'],
                 data: [15, 20, 12, 60, 20],
+                fill: false
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+            scales: {
+                y: {
+                    grid: {
+                        drawBorder: false,
+                        display: false,
+                        drawOnChartArea: false,
+                        drawTicks: false,
+                    },
+                    ticks: {
+                        display: false
+                    }
+                },
+                x: {
+                    grid: {
+                        drawBorder: false,
+                        display: false,
+                        drawOnChartArea: false,
+                        drawTicks: false,
+                    },
+                    ticks: {
+                        display: false,
+                    }
+                },
+            },
+        },
+    });
+
+    // Pie chart
+    var ctx4 = document.getElementById("pie-chart").getContext("2d");
+
+    new Chart(ctx4, {
+        type: "pie",
+        data: {
+            labels: ['Facebook', 'Direct', 'Organic', 'Referral'],
+            datasets: [{
+                label: "Projects",
+                weight: 9,
+                cutout: 0,
+                tension: 0.9,
+                pointRadius: 2,
+                borderWidth: 2,
+                backgroundColor: ['#17c1e8', '#cb0c9f', '#3A416F', '#a8b8d8'],
+                data: [15, 20, 12, 60],
                 fill: false
             }],
         },
