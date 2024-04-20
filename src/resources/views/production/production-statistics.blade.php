@@ -407,6 +407,7 @@
 
     var labels = @json($labels);
     var processedStats = @json($processedStats);
+    console.log(processedStats);
     var averages = processedStats.map(stat => stat.average_viewing_percentage);
 
     // Bar chart
