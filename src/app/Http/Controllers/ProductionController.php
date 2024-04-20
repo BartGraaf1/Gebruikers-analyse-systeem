@@ -11,6 +11,9 @@ use App\Models\PvpEvent;
 use App\Models\PvpViewer;
 use App\Models\ProductionDailyStat;
 use App\Models\PvpFragment;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class ProductionController extends Controller
 {
@@ -164,7 +167,14 @@ class ProductionController extends Controller
         $fragmentIds = is_array($fragmentIds) ? $fragmentIds : [$fragmentIds];
 
 
-
+        // Generate a collection of all dates between $startDate and $endDate
+        $allDates = collect(new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            (new DateTime($endDate))->modify('+1 day')
+        ))->map(function ($date) {
+            return $date->format('Y-m-d');
+        });
 
 
 
@@ -185,9 +195,39 @@ class ProductionController extends Controller
                                     SUM(watched_till_percentage_80) as avg_watched_80,
                                     SUM(watched_till_percentage_90) as avg_watched_90,
                                     SUM(watched_till_percentage_100) as avg_watched_100')
-            ->get();
+            ->get()
+            ->keyBy('day');  // Key collection by 'day' for easy merging
 
-        $processedStats  = $productionDailyStats->map(function ($stat) {
+        // Merge with all dates and fill missing days with zeros
+        $completeStats = $allDates->mapWithKeys(function ($date) use ($productionDailyStats) {
+            // Check if the day already exists in the fetched stats
+            $date = $date ." 00:00:00";
+            if ($productionDailyStats->has($date)) {
+                return [$date => $productionDailyStats->get($date)];
+            } else {
+                // Create a new instance and manually set attributes
+                $stat = new ProductionDailyStat;
+                $stat->day = $date;
+                $stat->total_views = 0;
+                $stat->total_load = 0;
+                $stat->avg_watched_0 = 0;
+                $stat->avg_watched_10 = 0;
+                $stat->avg_watched_20 = 0;
+                $stat->avg_watched_30 = 0;
+                $stat->avg_watched_40 = 0;
+                $stat->avg_watched_50 = 0;
+                $stat->avg_watched_60 = 0;
+                $stat->avg_watched_70 = 0;
+                $stat->avg_watched_80 = 0;
+                $stat->avg_watched_90 = 0;
+                $stat->avg_watched_100 = 0;
+                $stat->average_viewing_percentage = 0;
+                $stat->exists = false;  // Ensure the model is treated as not persisted
+                return [$date => $stat];
+            }
+        });
+
+        $processedStats  = $completeStats->map(function ($stat) {
             $total_viewers = $stat->avg_watched_0; // Start with the total number of viewers at 0%
             $weighted_sum = 0;
             $last_count = $total_viewers;
@@ -221,13 +261,13 @@ class ProductionController extends Controller
             return $stat;
         });
 
-
         // Calculate the total for each watched percentage
         $watchedTillPercentageTotals = [];
         for ($i = 0; $i <= 100; $i += 10) {
             $key = "avg_watched_$i";
             $watchedTillPercentageTotals[$key] = $productionDailyStats->sum($key);
         }
+//        $productionUserAgentStats = ProductionUserAgentStats::getFilledStats($fragmentIds, $startDate, $endDate);
 
         $labels = $productionDailyStats->pluck('day')->map(function ($date) {
             // Convert string to Carbon instance firsts
