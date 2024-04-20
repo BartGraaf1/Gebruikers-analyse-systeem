@@ -10,7 +10,7 @@ use App\Models\PvpProduction;
 use App\Models\PvpEvent;
 use App\Models\PvpViewer;
 use App\Models\ProductionDailyStat;
-use App\Models\Fragment;
+use App\Models\PvpFragment;
 
 class ProductionController extends Controller
 {
@@ -148,7 +148,7 @@ class ProductionController extends Controller
         }
 
         // Fetch all connected fragments to the production
-        $allFragments = Fragment::where('production_id', $productionId)->get();
+        $allFragments = PvpFragment::where('production_id', $productionId)->get();
 
         // Check if specific fragments are selected in the request, otherwise use fragment_start
         $fragmentIds = $request->input('statistics_fragments', explode(',', $pvpProduction->fragment_start));
@@ -164,8 +164,6 @@ class ProductionController extends Controller
         $fragmentIds = is_array($fragmentIds) ? $fragmentIds : [$fragmentIds];
 
 
-
-        //THIS IS WHERE YOU NEED TO GET THE Browser and Device data
 
 
 

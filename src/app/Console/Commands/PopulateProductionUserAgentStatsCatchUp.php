@@ -5,31 +5,29 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class PopulateProductionUserAgentStats extends Command
+class PopulateProductionUserAgentStatsCatchUp extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:populate-production-user-agent-stats';
+    protected $signature = 'app:populate-production-user-agent-stats-catch-up{days=30}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Catches up to the user agent data';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->info('Starting to fetch and populate daily user agents for productions...');
-
-        // Define the date for which stats should be aggregated
-        $yesterday = now()->subDay()->toDateString(); // For actual runs
+        $daysToCatchUp = (int) $this->argument('days');
+        $this->info("Starting catch-up for the past $daysToCatchUp days...");
 
         $query = "
         SELECT
@@ -72,54 +70,59 @@ class PopulateProductionUserAgentStats extends Command
             event_day, eve.fragment_id
     ";
 
-        // Execute the query and fetch the results
-        $stats = DB::connection('external_db')->select($query, [$yesterday . ' 00:00:00', $yesterday . ' 23:59:59']);
+        for ($i = 1; $i <= $daysToCatchUp; $i++) {
+            $date = now()->subDays($i)->toDateString();
+            $this->info("Processing $date...");
 
-        foreach ($stats as $stat) {
-            // Prepare data for insert/update according to your table's column names
-            $dataToUpdate = [
-                'day' => $stat->event_day,
-                'fragment_id' => $stat->fragment_id,
-                'iPhone_views' => $stat->iPhone_views,
-                'iPad_views' => $stat->iPad_views,
-                'iPod_views' => $stat->iPod_views,
-                'Mac_views' => $stat->Mac_views,
-                'Android_tablet_views' => $stat->Android_tablet_views,
-                'Android_views' => $stat->Android_views,
-                'Chrome_OS_views' => $stat->Chrome_OS_views,
-                'windows_10_11_views' => $stat->windows_10_11_views,
-                'windows_8_1_views' => $stat->windows_8_1_views,
-                'windows_8_views' => $stat->windows_8_views,
-                'windows_7_views' => $stat->windows_7_views,
-                'windows_vista_views' => $stat->windows_vista_views,
-                'windows_xp_views' => $stat->windows_xp_views,
-                'windows_2000_views' => $stat->windows_2000_views,
-                'Linux_views' => $stat->Linux_views,
-                'FreeBSD_views' => $stat->FreeBSD_views,
-                'Edge_views' => $stat->Edge_views,
-                'Opera_views' => $stat->Opera_views,
-                'Google_Chrome_views' => $stat->Google_Chrome_views,
-                'Apple_Safari_views' => $stat->Apple_Safari_views,
-                'Mozilla_Firefox_views' => $stat->Mozilla_Firefox_views,
-                'Samsung_Internet_views' => $stat->Samsung_Internet_views,
-                'Internet_Explorer_views' => $stat->Internet_Explorer_views,
-                'Brave_views' => $stat->Brave_views,
-                'Vivaldi_views' => $stat->Vivaldi_views,
-                'DuckDuckGo_views' => $stat->DuckDuckGo_views,
-                'Outlook_views' => $stat->Outlook_views,
-                'updated_at' => now(),
-            ];
+            // Execute the query and fetch the results
+            $stats = DB::connection('external_db')->select($query, [$date . ' 00:00:00', $date . ' 23:59:59']);
 
-            // Insert or Update the local database
-            DB::table('production_user_agent_stats')->updateOrInsert(
-                [
-                    'fragment_id' => $stat->fragment_id,
+            foreach ($stats as $stat) {
+                // Prepare data for insert/update according to your table's column names
+                $dataToUpdate = [
                     'day' => $stat->event_day,
-                ],
-                $dataToUpdate
-            );
-        }
+                    'fragment_id' => $stat->fragment_id,
+                    'iPhone_views' => $stat->iPhone_views,
+                    'iPad_views' => $stat->iPad_views,
+                    'iPod_views' => $stat->iPod_views,
+                    'Mac_views' => $stat->Mac_views,
+                    'Android_tablet_views' => $stat->Android_tablet_views,
+                    'Android_views' => $stat->Android_views,
+                    'Chrome_OS_views' => $stat->Chrome_OS_views,
+                    'windows_10_11_views' => $stat->windows_10_11_views,
+                    'windows_8_1_views' => $stat->windows_8_1_views,
+                    'windows_8_views' => $stat->windows_8_views,
+                    'windows_7_views' => $stat->windows_7_views,
+                    'windows_vista_views' => $stat->windows_vista_views,
+                    'windows_xp_views' => $stat->windows_xp_views,
+                    'windows_2000_views' => $stat->windows_2000_views,
+                    'Linux_views' => $stat->Linux_views,
+                    'FreeBSD_views' => $stat->FreeBSD_views,
+                    'Edge_views' => $stat->Edge_views,
+                    'Opera_views' => $stat->Opera_views,
+                    'Google_Chrome_views' => $stat->Google_Chrome_views,
+                    'Apple_Safari_views' => $stat->Apple_Safari_views,
+                    'Mozilla_Firefox_views' => $stat->Mozilla_Firefox_views,
+                    'Samsung_Internet_views' => $stat->Samsung_Internet_views,
+                    'Internet_Explorer_views' => $stat->Internet_Explorer_views,
+                    'Brave_views' => $stat->Brave_views,
+                    'Vivaldi_views' => $stat->Vivaldi_views,
+                    'DuckDuckGo_views' => $stat->DuckDuckGo_views,
+                    'Outlook_views' => $stat->Outlook_views,
+                    'updated_at' => now(),
+                ];
 
-        $this->info('Daily stats for productions have been updated.');
+                // Insert or Update the local database
+                DB::table('production_user_agent_stats')->updateOrInsert(
+                    [
+                        'fragment_id' => $stat->fragment_id,
+                        'day' => $stat->event_day,
+                    ],
+                    $dataToUpdate
+                );
+            }
+
+            $this->info('Daily stats for productions have been updated.');
+        }
     }
 }

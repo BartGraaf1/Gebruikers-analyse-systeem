@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('app:sync-productions')->everyMinute()->withoutOverlapping();
         $schedule->command('production:populate-daily-stats')->daily()->withoutOverlapping();
+        $schedule->command('app:populate-production-user-agent-stats')->daily()->withoutOverlapping();
     }
 
     /**
