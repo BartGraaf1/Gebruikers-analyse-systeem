@@ -17,25 +17,28 @@ class SessionsController extends Controller
     {
         $attributes = request()->validate([
             'email'=>'required|email',
-            'password'=>'required' 
+            'password'=>'required'
         ]);
 
-        if(Auth::attempt($attributes))
-        {
-            session()->regenerate();
-            return redirect('dashboard')->with(['success'=>'You are logged in.']);
-        }
-        else{
+        if (Auth::attempt($attributes)) {
+            // Authentication passed...
+            // Check if the user's role is approved
+            if (Auth::user()->user_role == '0') {
+                Auth::logout();  // Important: Logout the user immediately
+                return back()->withErrors(['email' => 'Your account has not been approved.']);
+            }
 
-            return back()->withErrors(['email'=>'Email or password invalid.']);
+            session()->regenerate();
+            return redirect('dashboard')->with('success', 'You are logged in.');
+        } else {
+            return back()->withErrors(['email' => 'Email or password invalid.']);
         }
     }
-    
+
     public function destroy()
     {
 
         Auth::logout();
-
         return redirect('/login')->with(['success'=>'You\'ve been logged out.']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductionUserAgentStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +11,10 @@ use App\Models\PvpProduction;
 use App\Models\PvpEvent;
 use App\Models\PvpViewer;
 use App\Models\ProductionDailyStat;
-use App\Models\Fragment;
+use App\Models\PvpFragment;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class ProductionController extends Controller
 {
@@ -103,15 +107,18 @@ class ProductionController extends Controller
 
         if ($search) {
             // If there is a search term, perform the search on title and description
-            $productions = \App\Models\Production::query()
+            $productions = Production::query()
                 ->where('title', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
                 ->orWhere('created_at', 'LIKE', "%{$search}%")
+                ->orderBy('id', 'desc') // Order by id in ascending order
                 ->paginate(10)
                 ->appends(request()->except('page')); // This will append all query parameters except 'page' to the pagination links
             } else {
                 // Otherwise, just paginate all productions
-            $productions = \App\Models\Production::paginate(10);
+            $productions = \App\Models\Production::query()
+                ->orderBy('id', 'desc') // Order by id in ascending order
+                ->paginate(10);
         }
 
         // Return the index view with the results
@@ -148,12 +155,10 @@ class ProductionController extends Controller
         }
 
         // Fetch all connected fragments to the production
-        $allFragments = Fragment::where('production_id', $productionId)->get();
+        $allFragments = PvpFragment::where('production_id', $productionId)->get();
 
         // Check if specific fragments are selected in the request, otherwise use fragment_start
         $fragmentIds = $request->input('statistics_fragments', explode(',', $pvpProduction->fragment_start));
-
-        //TODO check if the fragment is linked to the production
 
         // Ensure $fragmentIds is always an array
         if (!is_array($fragmentIds)) {
@@ -163,84 +168,26 @@ class ProductionController extends Controller
         // Normalize $fragmentIds to ensure it's an array even if only one fragment ID is provided
         $fragmentIds = is_array($fragmentIds) ? $fragmentIds : [$fragmentIds];
 
+        $productionDailyStats = ProductionDailyStat::fetchAndProcessStats($startDate, $endDate, $fragmentIds);
+        $productionDailyStatsProcessedAverages = $productionDailyStats['productionDailyStatsProcessedAverages'];
+        $productionDailyStatsWithEmptyDays = $productionDailyStats['productionDailyStatsWithEmptyDays'];
+        $productionDailyStatsWatchedTillPercentageTotals = $productionDailyStats['productionDailyStatsWatchedTillPercentageTotals'];
 
 
-        //THIS IS WHERE YOU NEED TO GET THE Browser and Device data
+        $productionUserAgentStats = ProductionUserAgentStats::fetchAndProcessStats($startDate, $endDate, $fragmentIds);
+        $browserStats = $productionUserAgentStats['browserStats'];
+        $osStats = $productionUserAgentStats['osStats'];
 
-
-
-
-        // Fetch stats from the local database based on these fragment IDs
-        $productionDailyStats = ProductionDailyStat::whereIn('fragment_id', $fragmentIds)
-            ->whereDate('day', '>=', $startDate)
-            ->whereDate('day', '<=', $endDate)
-            ->groupBy('day')
-            ->selectRaw('day, SUM(views) as total_views, SUM(`load`) as total_load,
-                                    SUM(watched_till_percentage_0) as avg_watched_0,
-                                    SUM(watched_till_percentage_10) as avg_watched_10,
-                                    SUM(watched_till_percentage_20) as avg_watched_20,
-                                    SUM(watched_till_percentage_30) as avg_watched_30,
-                                    SUM(watched_till_percentage_40) as avg_watched_40,
-                                    SUM(watched_till_percentage_50) as avg_watched_50,
-                                    SUM(watched_till_percentage_60) as avg_watched_60,
-                                    SUM(watched_till_percentage_70) as avg_watched_70,
-                                    SUM(watched_till_percentage_80) as avg_watched_80,
-                                    SUM(watched_till_percentage_90) as avg_watched_90,
-                                    SUM(watched_till_percentage_100) as avg_watched_100')
-            ->get();
-
-        $processedStats  = $productionDailyStats->map(function ($stat) {
-            $total_viewers = $stat->avg_watched_0; // Start with the total number of viewers at 0%
-            $weighted_sum = 0;
-            $last_count = $total_viewers;
-
-            // Iterate through each 10% interval up to 100%
-            for ($i = 10; $i <= 100; $i += 10) {
-                $current_key = "avg_watched_$i";
-                $current_viewers = isset($stat->$current_key) ? $stat->$current_key : 0;
-
-                // Calculate the number of viewers who stopped at this specific interval
-                $viewers_stopped = $last_count - $current_viewers;
-                $weighted_sum += $viewers_stopped * ($i - 10); // Apply the midpoint of the previous range
-
-                // Update the last_count for the next iteration
-                $last_count = $current_viewers;
-
-                // Break early if no viewers reach further milestones
-                if ($current_viewers == 0) {
-                    break;
-                }
-            }
-
-            // Include the last set of viewers who reached the final milestone
-            if ($last_count > 0) {
-                $weighted_sum += $last_count * ($i - 10); // Use the last valid milestone
-            }
-
-            // Calculate the average viewing percentage
-            $stat->average_viewing_percentage = $total_viewers > 0 ? $weighted_sum / $total_viewers : 0;
-
-            return $stat;
-        });
-
-
-        // Calculate the total for each watched percentage
-        $watchedTillPercentageTotals = [];
-        for ($i = 0; $i <= 100; $i += 10) {
-            $key = "avg_watched_$i";
-            $watchedTillPercentageTotals[$key] = $productionDailyStats->sum($key);
-        }
-
-        $labels = $productionDailyStats->pluck('day')->map(function ($date) {
+        $labels = $productionDailyStatsWithEmptyDays->pluck('day')->map(function ($date) {
             // Convert string to Carbon instance firsts
             return Carbon::parse($date)->format('M d'); // Formatting date as 'Mon 01'
         });
 
-        $totalViews = $productionDailyStats->pluck('total_views');
-        $totalLoad = $productionDailyStats->pluck('total_load');
+        $totalViews = $productionDailyStatsWithEmptyDays->pluck('total_views');
+        $totalLoad = $productionDailyStatsWithEmptyDays->pluck('total_load');
 
         // Pass these arrays to your view
-        return view('production.production-statistics', compact('production', 'productionDailyStats', 'allFragments', 'labels', 'totalViews', 'totalLoad', 'processedStats', 'watchedTillPercentageTotals'));
+        return view('production.production-statistics', compact('production','allFragments', 'fragmentIds', 'startDate', 'endDate', 'labels', 'totalViews', 'totalLoad', 'productionDailyStatsProcessedAverages', 'productionDailyStatsWatchedTillPercentageTotals', 'productionUserAgentStats', 'browserStats', 'osStats'));
 
     }
 }

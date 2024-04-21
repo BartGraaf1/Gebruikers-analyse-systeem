@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Production;
+use App\Models\ProductionDailyStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,14 +17,21 @@ class DashboardController extends Controller
             ->pluck('id');
 
         // Fetch fragments associated with active productions
-        $fragmentsCsv = DB::connection('external_db')->table('productions')
+        $productions = DB::connection('external_db')->table('productions')
             ->whereIn('id', $activeProductionIds)
-            ->pluck('fragment_start');
+            ->get(['id', 'fragment_start']);  // Retrieve both id and fragment_start
 
-        // Flatten CSV strings into an array of unique fragment IDs
+        // Format the result to use production id as the key and fragment_start as the value
+        $fragmentsCsv = $productions->mapWithKeys(function ($item) {
+            return [$item->id => $item->fragment_start];
+        });
+
+
+        // Optionally, flatten CSV strings into an array of unique fragment IDs if needed elsewhere
         $fragmentIds = $fragmentsCsv->flatMap(function ($csv) {
             return explode(',', $csv);
         })->unique()->all();
+
 
         // Fetch views per month for active fragments, limited to the last 12 months
         $viewsPerMonth = DB::table('production_daily_stats')
@@ -121,7 +130,77 @@ class DashboardController extends Controller
                 'status' => $statusLastMonth
             ],
         ];
+
+
+        $fragmentStatsLatsPeriod = ProductionDailyStat::fetchDailyStats(30);
+
+        foreach ($fragmentsCsv as $index => $fragmentCsv) {
+            $fragmentIds = explode(',', $fragmentCsv); // Convert CSV string to array of IDs
+
+            // Initialize total views for this production
+            $totalViews = 0;
+
+            // Sum views for each fragment in this production
+            foreach ($fragmentIds as $fragmentId) {
+                // Check if the current fragmentId is present in the stats and add its views to the total
+                if (isset($fragmentStatsLatsPeriod[$fragmentId])) {
+                    $totalViews += $fragmentStatsLatsPeriod[$fragmentId]['total_views'];
+                }
+            }
+
+            // Assign the calculated total views to the productionViews array
+            $productionViews[$index] = $totalViews;
+        }
+        // Sort by production_id descending to get the newest
+        krsort($productionViews);
+        $top10Newest = array_slice($productionViews, 0, 10, true);
+
+        // Sort by viewers ascending, then by production_id descending for tie breaking
+        uksort($productionViews, function($a, $b) use ($productionViews) {
+            if ($productionViews[$a] == $productionViews[$b]) {
+                return ($b <=> $a); // Descending order for production_id if views are the same
+            }
+            return ($productionViews[$a] <=> $productionViews[$b]);
+        });
+        $top10Worst = array_slice($productionViews, 0, 10, true);
+
+        // Sort by viewers descending, then by production_id descending for tie breaking
+        uksort($productionViews, function($a, $b) use ($productionViews) {
+            if ($productionViews[$a] == $productionViews[$b]) {
+                return ($b <=> $a); // Descending order for production_id if views are the same
+            }
+            return ($productionViews[$b] <=> $productionViews[$a]);
+        });
+        $last10Best = array_slice($productionViews, 0, 10, true);
+
+
+        $detailedTop10Newest =   $this->fetchAndAttachProductionDetails($top10Newest);
+        $detailedTop10Worst =    $this->fetchAndAttachProductionDetails($top10Worst);
+        $detailedLast10Best =    $this->fetchAndAttachProductionDetails($last10Best);
+
         // Pass the data to the view
-        return view('dashboard', compact('viewsPerMonth', 'topRowStatistics'));
+        return view('dashboard', compact('viewsPerMonth', 'topRowStatistics', 'detailedTop10Newest', 'detailedTop10Worst', 'detailedLast10Best'));
+    }
+
+    private function fetchAndAttachProductionDetails(array $productionViews)
+    {
+        // Extract production IDs
+        $productionIds = array_keys($productionViews);
+
+        // Fetch production data from the database
+        $productions = Production::whereIn('id', $productionIds)
+            ->get()
+            ->keyBy('id');
+
+        // Ensure results are returned in the order of the original $productionIds
+        $orderedProductions = collect($productionIds)->map(function ($id) use ($productions) {
+            return $productions[$id];
+        });
+
+        // Attach viewer counts to each production
+        return $orderedProductions->map(function ($production) use ($productionViews) {
+            $production->viewers = $productionViews[$production->id] ?? 0;
+            return $production;
+        });
     }
 }

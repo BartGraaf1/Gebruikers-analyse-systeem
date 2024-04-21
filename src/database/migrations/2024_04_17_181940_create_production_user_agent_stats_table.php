@@ -4,12 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProductionUserAgentStatsTable extends Migration
 {
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('production_user_agent_stats', function (Blueprint $table) {
             $table->id();
@@ -47,6 +47,7 @@ return new class extends Migration
             $table->integer('Unknown_browser_views')->default(0);
             $table->integer('Unknown_device_views')->default(0);
 
+            $table->timestamps();
             $table->unique(['fragment_id', 'day']); // Ensure one entry per production per day
         });
     }
@@ -54,8 +55,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('production_user_agent_stats');
     }
-};
+}

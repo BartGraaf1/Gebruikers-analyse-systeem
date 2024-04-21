@@ -61,8 +61,8 @@
           <div class="card">
               <div class="card-header pb-0">
                   <div class="row">
-                      <div class="col-lg-6 col-7">
-                          <h6>Tabel 1</h6>
+                      <div class="col-12">
+                          <h6>Top 10 Newest Productions</h6>
                       </div>
                   </div>
               </div>
@@ -71,31 +71,19 @@
                       <table class="table align-items-center mb-0">
                           <thead>
                           <tr>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">A</th>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">B</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">C</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">D</th>
+                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Viewers</th>
                           </tr>
                           </thead>
                           <tbody>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
+                          @foreach ($detailedTop10Newest as $production)
+                              <tr onclick="window.location='/production/{{ $production->id }}/analyse';" style="cursor: pointer;">
+                                  <td>{{ $production->title }}</td>
+                                  <td>{{ $production->description }}</td>
+                                  <td class="text-center">{{ $production->viewers }}</td>
+                              </tr>
+                          @endforeach
                           </tbody>
                       </table>
                   </div>
@@ -106,8 +94,8 @@
           <div class="card">
               <div class="card-header pb-0">
                   <div class="row">
-                      <div class="col-lg-6 col-7">
-                          <h6>Tabel 1</h6>
+                      <div class="col-12">
+                          <h6>Top 10 best Productions</h6>
                       </div>
                   </div>
               </div>
@@ -116,31 +104,19 @@
                       <table class="table align-items-center mb-0">
                           <thead>
                           <tr>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">A</th>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">B</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">C</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">D</th>
+                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Viewers</th>
                           </tr>
                           </thead>
                           <tbody>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
+                          @foreach ($detailedLast10Best as $production)
+                              <tr onclick="window.location='/production/{{ $production->id }}/analyse';" style="cursor: pointer;">
+                                  <td>{{ $production->title }}</td>
+                                  <td>{{ $production->description }}</td>
+                                  <td class="text-center">{{ $production->viewers }}</td>
+                              </tr>
+                          @endforeach
                           </tbody>
                       </table>
                   </div>
@@ -151,8 +127,8 @@
           <div class="card">
               <div class="card-header pb-0">
                   <div class="row">
-                      <div class="col-lg-6 col-7">
-                          <h6>Tabel 1</h6>
+                      <div class="col-12">
+                          <h6>Top 10 worst Productions</h6>
                       </div>
                   </div>
               </div>
@@ -161,31 +137,19 @@
                       <table class="table align-items-center mb-0">
                           <thead>
                           <tr>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">A</th>
-                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">B</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">C</th>
-                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">D</th>
+                              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Title</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                              <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Viewers</th>
                           </tr>
                           </thead>
                           <tbody>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
-                          <tr>
-                              <td>1</td>
-                              <td>2</td>
-                              <td>3</td>
-                              <td>4</td>
-                          </tr>
+                          @foreach ($detailedTop10Worst as $production)
+                              <tr onclick="window.location='/production/{{ $production->id }}/analyse';" style="cursor: pointer;">
+                                  <td>{{ $production->title }}</td>
+                                  <td>{{ $production->description }}</td>
+                                  <td class="text-center">{{ $production->viewers }}</td>
+                              </tr>
+                          @endforeach
                           </tbody>
                       </table>
                   </div>
@@ -204,15 +168,11 @@
 
       var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
 
-      gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
-      gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+      gradientStroke1.addColorStop(1, 'rgb(45,169,202)');
 
       var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
 
       gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
-      gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
 
     // Convert Laravel collection to usable chart data
     var labels = viewsPerMonth.map(function(view) {
@@ -232,7 +192,7 @@
                 tension: 0.4,
                 borderWidth: 3,
                 pointRadius: 0,
-                borderColor: "#cb0c9f",
+                borderColor: "#2da9ca",
                 backgroundColor: gradientStroke1,
                 fill: true,
                 data: data, // Use dynamic data

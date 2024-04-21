@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fragment extends Model
+class PvpFragment extends Model
 {
     // Specify the connection name for the external database
     protected $connection = 'external_db';
