@@ -34,8 +34,7 @@ class RegisterController extends Controller
             $admin->notify(new AdminNewUserNotification($user));
         }
 
-        session()->flash('success', 'Your account has been created. Pending approval.');
-        Auth::login($user);
-        return redirect('/dashboard');
+        session()->flash('success', 'You have requested for your account to have access to the application. Please wait for approval.');
+        return redirect('/login');
     }
 }
