@@ -168,15 +168,11 @@
 
       var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
 
-      gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
-      gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+      gradientStroke1.addColorStop(1, 'rgb(45,169,202)');
 
       var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
 
       gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
-      gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
 
     // Convert Laravel collection to usable chart data
     var labels = viewsPerMonth.map(function(view) {

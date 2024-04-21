@@ -13,7 +13,7 @@
                 <p class="mb-0">{{ session('error') }}</p>
             </div>
         @endif
-        <div class="row mt-4">
+        <div class="row mt-0">
             <div class="col-md-6 z-index-3">
                 <div class="card p-3">
                     <form action="{{ route('production.analyse', ['production' => $production]) }}" method="GET">
@@ -137,7 +137,7 @@
                 pointRadius: 2,
                 pointBackgroundColor: "#2da9ca",
                 borderColor: "#2da9ca",
-                backgroundColor: "rgba(203, 12, 159, 0.1)", // Use a lighter color or gradient
+                backgroundColor: "rgb(169,234,252)", // Use a lighter color or gradient
                 data: totalViews, // Use dynamic data from the server
                 maxBarThickness: 6
             },
@@ -221,9 +221,9 @@
 
     var ctx2 = document.getElementById("viewing-range-sum").getContext("2d");
     var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
-    gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
-    gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-    gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+    gradientStroke1.addColorStop(1, 'rgba(45,169,202,0.2)');
+    gradientStroke1.addColorStop(0.2, 'rgba(45,169,202,0.0)');
+    gradientStroke1.addColorStop(0, 'rgba(45,169,202,0)');
 
     new Chart(ctx2, {
         type: "line",
