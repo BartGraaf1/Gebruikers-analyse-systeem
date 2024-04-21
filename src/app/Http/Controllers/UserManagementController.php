@@ -64,19 +64,29 @@ class UserManagementController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // Capture old role
+        $oldRole = $user->user_role;
+
         // Validates and updates the user
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => ['nullable', 'regex:/^(\+?[1-9]\d{1,14}|0\d{9})$/'],
             'location' => 'nullable|max:255',
-            'user_role' => 'max:1',
+            'user_role' => 'required|max:1', // Ensure role is always provided and checked
         ]);
 
         $user->update($validatedData);
 
+        // Check if the role has changed from inactive (0) to active (not 0)
+        if ($oldRole == '0' && $validatedData['user_role'] != '0') {
+            // Notify user of role change
+            $user->notify(new \App\Notifications\UserRoleChangedNotification($user));
+        }
+
         return redirect('/user-management')->with('success', 'User successfully updated.');
     }
+
 
     public function confirmDelete(User $user)
     {

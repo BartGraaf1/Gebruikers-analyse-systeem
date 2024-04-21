@@ -79,6 +79,7 @@
                             <div class="col-md-12">
                                 <label for="user-role" class="form-control-label">{{ __('User Role') }}</label>
                                 <select name="user_role" id="user_role" class="form-control">
+                                    <option value="0" {{ $user->user_role == 0 ? 'selected' : '' }}>Inactive User</option>
                                     <option value="1" {{ $user->user_role == 1 ? 'selected' : '' }}>Admin</option>
                                     <option value="2" {{ $user->user_role == 2 ? 'selected' : '' }}>Regular User</option>
                                 </select>
