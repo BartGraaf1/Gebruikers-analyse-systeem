@@ -204,7 +204,7 @@
     });
 
 
-    var watchedData = @json($watchedTillPercentageTotals);
+    var watchedData = @json($productionDailyStatsWatchedTillPercentageTotals);
 
     // Extract labels and data from watchedData
     var labels = Object.keys(watchedData).map(key => key.replace('avg_watched_', '') + '%');
@@ -290,80 +290,97 @@
     });
 
     // Doughnut chart
+    var browserStats = @json($browserStats);
+
+    // Initialize a new object to store the cumulative counts
+    var cumulativebrowserStats = {};
+
+    // Iterate over each day's data
+    for (var date in browserStats) {
+        var dailyStats = browserStats[date];
+        for (var device in dailyStats) {
+            if (cumulativebrowserStats.hasOwnProperty(device)) {
+                cumulativebrowserStats[device] += parseInt(dailyStats[device], 10); // Make sure to parse the string counts as integers
+            } else {
+                cumulativebrowserStats[device] = parseInt(dailyStats[device], 10);
+            }
+        }
+    }
+
+    console.log(cumulativebrowserStats);
     var ctx3 = document.getElementById("doughnut-chart").getContext("2d");
 
+    // Prepare the data for the doughnut chart
+    var labels = Object.keys(cumulativebrowserStats);
+    var data = labels.map(label => cumulativebrowserStats[label]);
+
     new Chart(ctx3, {
-        type: "doughnut",
+        type: 'doughnut',
         data: {
-            labels: ['Creative Tim', 'Github', 'Bootsnipp', 'Dev.to', 'Codeinwp'],
+            labels: labels,
             datasets: [{
-                label: "Projects",
-                weight: 9,
-                cutout: 60,
-                tension: 0.9,
-                pointRadius: 2,
-                borderWidth: 2,
-                backgroundColor: ['#2152ff', '#3A416F', '#f53939', '#a8b8d8', '#cb0c9f'],
-                data: [15, 20, 12, 60, 20],
-                fill: false
-            }],
+                label: 'Device Usage',
+                data: data,
+                cutout: '60%', // Controls the thickness of the doughnut
+                backgroundColor: [
+                    '#2152ff', '#3A416F', '#f53939', '#a8b8d8', '#cb0c9f',
+                    // Add more colors if there are more device types
+                ],
+                borderWidth: 2
+            }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: true,  // Set this to true if you want to display the legend
+                    position: 'top'
                 }
             },
             interaction: {
                 intersect: false,
                 mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                    },
-                    ticks: {
-                        display: false
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                    },
-                    ticks: {
-                        display: false,
-                    }
-                },
             },
         },
     });
 
-    // Pie chart
+
+    // Assuming osStats is already populated and available
     var ctx4 = document.getElementById("pie-chart").getContext("2d");
+
+    // Extract labels and corresponding data counts
+    var osStats = @json($osStats);
+
+    // Initialize a new object to store the cumulative counts
+    var cumulativeOsStats = {};
+
+    // Iterate over each day's data
+    for (var date in osStats) {
+        var dailyStats = osStats[date];
+        for (var os in dailyStats) {
+            if (cumulativeOsStats.hasOwnProperty(os)) {
+                cumulativeOsStats[os] += parseInt(dailyStats[os], 10); // Make sure to parse the string counts as integers
+            } else {
+                cumulativeOsStats[os] = parseInt(dailyStats[os], 10);
+            }
+        }
+    }
+
+    var labels = Object.keys(cumulativeOsStats);
+    var data = labels.map(label => cumulativeOsStats[label]);
 
     new Chart(ctx4, {
         type: "pie",
         data: {
-            labels: ['Facebook', 'Direct', 'Organic', 'Referral'],
+            labels: labels,
             datasets: [{
-                label: "Projects",
-                weight: 9,
-                cutout: 0,
-                tension: 0.9,
-                pointRadius: 2,
-                borderWidth: 2,
-                backgroundColor: ['#17c1e8', '#cb0c9f', '#3A416F', '#a8b8d8'],
-                data: [15, 20, 12, 60],
-                fill: false
+                label: "OS Usage",
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                    '#C9CBCF', '#4D5360', '#23C9FF', '#EBCCD1', '#3E95CD', '#8E5EA2'
+                ],
             }],
         },
         options: {
@@ -371,49 +388,22 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: true,
+                    position: 'top',
                 }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                    },
-                    ticks: {
-                        display: false
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                    },
-                    ticks: {
-                        display: false,
-                    }
-                },
             },
         },
     });
 
     var labels = @json($labels);
-    var processedStats = @json($processedStats);
-    var processedStatsArray = Object.values(processedStats);
-    console.log(processedStatsArray);
-    var processedStatsArrayMapped = processedStatsArray.map(stat => stat.average_viewing_percentage);
+    var productionDailyStatsProcessedAverages = @json($productionDailyStatsProcessedAverages);
+    var productionDailyStatsProcessedAveragesArray = Object.values(productionDailyStatsProcessedAverages);
+    console.log(productionDailyStatsProcessedAveragesArray);
+    var productionDailyStatsProcessedAveragesArrayMapped = productionDailyStatsProcessedAveragesArray.map(stat => stat.average_viewing_percentage);
 
     // Bar chart
     var ctx5 = document.getElementById("average-viewing-range").getContext("2d");
-    console.log(processedStatsArrayMapped);
+    console.log(productionDailyStatsProcessedAveragesArrayMapped);
 
     new Chart(ctx5, {
         type: "bar",
@@ -425,7 +415,7 @@
                 borderWidth: 0,
                 borderRadius: 4,
                 backgroundColor: '#3A416F',
-                data: processedStatsArrayMapped,
+                data: productionDailyStatsProcessedAveragesArrayMapped,
                 fill: false,
                 maxBarThickness: 35
             }],
