@@ -407,11 +407,13 @@
 
     var labels = @json($labels);
     var processedStats = @json($processedStats);
-    console.log(processedStats);
-    var averages = processedStats.map(stat => stat.average_viewing_percentage);
+    var processedStatsArray = Object.values(processedStats);
+    console.log(processedStatsArray);
+    var processedStatsArrayMapped = processedStatsArray.map(stat => stat.average_viewing_percentage);
 
     // Bar chart
     var ctx5 = document.getElementById("average-viewing-range").getContext("2d");
+    console.log(processedStatsArrayMapped);
 
     new Chart(ctx5, {
         type: "bar",
@@ -423,7 +425,7 @@
                 borderWidth: 0,
                 borderRadius: 4,
                 backgroundColor: '#3A416F',
-                data: averages,
+                data: processedStatsArrayMapped,
                 fill: false,
                 maxBarThickness: 35
             }],

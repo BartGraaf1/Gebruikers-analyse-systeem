@@ -269,7 +269,7 @@ class ProductionController extends Controller
         }
 //        $productionUserAgentStats = ProductionUserAgentStats::getFilledStats($fragmentIds, $startDate, $endDate);
 
-        $labels = $productionDailyStats->pluck('day')->map(function ($date) {
+        $labels = $completeStats->pluck('day')->map(function ($date) {
             // Convert string to Carbon instance firsts
             return Carbon::parse($date)->format('M d'); // Formatting date as 'Mon 01'
         });
