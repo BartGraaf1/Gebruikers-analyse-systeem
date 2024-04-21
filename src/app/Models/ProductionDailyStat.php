@@ -138,4 +138,49 @@ class ProductionDailyStat extends Model
         ];
     }
 
+    public static function fetchDailyStats($days): array
+    {
+        $startDate = now()->subDays($days)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $data = self::whereBetween('day', [$startDate, $endDate])
+            ->groupBy('fragment_id')
+            ->selectRaw('fragment_id, SUM(views) as total_views, SUM(`load`) as total_load,
+                        SUM(watched_till_percentage_0) as total_watched_0,
+                        SUM(watched_till_percentage_10) as total_watched_10,
+                        SUM(watched_till_percentage_20) as total_watched_20,
+                        SUM(watched_till_percentage_30) as total_watched_30,
+                        SUM(watched_till_percentage_40) as total_watched_40,
+                        SUM(watched_till_percentage_50) as total_watched_50,
+                        SUM(watched_till_percentage_60) as total_watched_60,
+                        SUM(watched_till_percentage_70) as total_watched_70,
+                        SUM(watched_till_percentage_80) as total_watched_80,
+                        SUM(watched_till_percentage_90) as total_watched_90,
+                        SUM(watched_till_percentage_100) as total_watched_100')
+            ->get();
+
+        // Convert the collection to an associative array with `fragment_id` as the key
+        $results = [];
+        foreach ($data as $item) {
+            $results[$item->fragment_id] = [
+                'total_views' => $item->total_views,
+                'total_load' => $item->total_load,
+                'total_watched_0' => $item->total_watched_0,
+                'total_watched_10' => $item->total_watched_10,
+                'total_watched_20' => $item->total_watched_20,
+                'total_watched_30' => $item->total_watched_30,
+                'total_watched_40' => $item->total_watched_40,
+                'total_watched_50' => $item->total_watched_50,
+                'total_watched_60' => $item->total_watched_60,
+                'total_watched_70' => $item->total_watched_70,
+                'total_watched_80' => $item->total_watched_80,
+                'total_watched_90' => $item->total_watched_90,
+                'total_watched_100' => $item->total_watched_100
+            ];
+        }
+
+        return $results;
+    }
+
+
 }

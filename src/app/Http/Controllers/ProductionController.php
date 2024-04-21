@@ -107,15 +107,18 @@ class ProductionController extends Controller
 
         if ($search) {
             // If there is a search term, perform the search on title and description
-            $productions = \App\Models\Production::query()
+            $productions = Production::query()
                 ->where('title', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
                 ->orWhere('created_at', 'LIKE', "%{$search}%")
+                ->orderBy('id', 'desc') // Order by id in ascending order
                 ->paginate(10)
                 ->appends(request()->except('page')); // This will append all query parameters except 'page' to the pagination links
             } else {
                 // Otherwise, just paginate all productions
-            $productions = \App\Models\Production::paginate(10);
+            $productions = \App\Models\Production::query()
+                ->orderBy('id', 'desc') // Order by id in ascending order
+                ->paginate(10);
         }
 
         // Return the index view with the results
@@ -184,7 +187,7 @@ class ProductionController extends Controller
         $totalLoad = $productionDailyStatsWithEmptyDays->pluck('total_load');
 
         // Pass these arrays to your view
-        return view('production.production-statistics', compact('production','allFragments', 'labels', 'totalViews', 'totalLoad', 'productionDailyStatsProcessedAverages', 'productionDailyStatsWatchedTillPercentageTotals', 'productionUserAgentStats', 'browserStats', 'osStats'));
+        return view('production.production-statistics', compact('production','allFragments', 'fragmentIds', 'startDate', 'endDate', 'labels', 'totalViews', 'totalLoad', 'productionDailyStatsProcessedAverages', 'productionDailyStatsWatchedTillPercentageTotals', 'productionUserAgentStats', 'browserStats', 'osStats'));
 
     }
 }
