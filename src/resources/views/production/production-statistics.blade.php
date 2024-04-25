@@ -55,17 +55,29 @@
             <div class="col-md-6 mt-md-0 mt-4">
                 <div class="card z-index-2">
                     <div class="card-header p-3 pb-0">
-                        <h6>Viewing range visualized</h6>
+                        <h6>Open rate</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
-                            <canvas id="viewing-range-sum" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                            <canvas id="open-rate-chart" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
             <div class="row mt-4">
+                <div class="col-md-6 mt-md-0 mt-4">
+                    <div class="card z-index-2">
+                        <div class="card-header p-3 pb-0">
+                            <h6>Viewing range</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="chart">
+                                <canvas id="viewing-range-sum" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <div class="card z-index-2">
                         <div class="card-header p-3 pb-0">
@@ -78,21 +90,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card z-index-2">
-                        <div class="card-header p-3 pb-0">
-                            <h6>Browser statistics</h6>
-                        </div>
-                        <div class="card-body p-3">
-                            <div class="chart">
-                                <canvas id="browser-stats" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
-                            </div>
-                        </div>
+            </div>
+        </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card z-index-2">
+                <div class="card-header p-3 pb-0">
+                    <h6>Browser statistics</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="browser-stats" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-    <div class="row mt-4">
         <div class="col-md-6">
             <div class="card z-index-2">
                 <div class="card-header p-3 pb-0">
@@ -101,6 +113,20 @@
                 <div class="card-body p-3">
                     <div class="chart">
                         <canvas id="os-stats" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card z-index-2">
+                <div class="card-header p-3 pb-0">
+                    <h6>Device type statistics</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="device-type-stats" class="chart-canvas" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 428.5px;" width="428"></canvas>
                     </div>
                 </div>
             </div>
@@ -126,21 +152,23 @@
     var labels = @json($labels);
     var totalViews = @json($totalViews);
     var totalLoad = @json($totalLoad);
+
     new Chart(ctx1, {
         type: "line",
         data: {
             labels: labels, // Use dynamic labels from the server
-            datasets: [{
-                label: "Total Views",
-                tension: 0.4,
-                borderWidth: 3,
-                pointRadius: 2,
-                pointBackgroundColor: "#2da9ca",
-                borderColor: "#2da9ca",
-                backgroundColor: "rgb(169,234,252)", // Use a lighter color or gradient
-                data: totalViews, // Use dynamic data from the server
-                maxBarThickness: 6
-            },
+            datasets: [
+                {
+                    label: "Total Views",
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 2,
+                    pointBackgroundColor: "#2da9ca",
+                    borderColor: "#2da9ca",
+                    backgroundColor: "rgb(169,234,252)", // Use a lighter color or gradient
+                    data: totalViews, // Use dynamic data from the server
+                    maxBarThickness: 6
+                },
                 {
                     label: "Total Load",
                     tension: 0.4,
@@ -151,7 +179,8 @@
                     backgroundColor: "rgba(58, 65, 111, 0.1)", // Use a lighter color or gradient
                     data: totalLoad, // Use dynamic data from the server
                     maxBarThickness: 6
-                }]
+                }
+            ]
         },
         options: {
             responsive: true,
@@ -211,9 +240,90 @@
     });
     // End Views + load
 
+    //Start
+    var ctx7 = document.getElementById("open-rate-chart").getContext("2d");
+    var totalOpenRates = @json($totalOpenRates);
+    var labels = @json($labels);
+
+    new Chart(ctx7, {
+        type: "line",
+        data: {
+            labels: labels, // Use dynamic labels from the server
+            datasets: [
+                {
+                    label: "Open rate",
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 2,
+                    pointBackgroundColor: "#2da9ca",
+                    borderColor: "#2da9ca",
+                    backgroundColor: "rgb(169,234,252)", // Use a lighter color or gradient
+                    data: totalOpenRates, // Use dynamic data from the server
+                    maxBarThickness: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true, // Set this to true to show the legend
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+            scales: {
+                y: {
+                    grid: {
+                        drawBorder: false,
+                        display: true,
+                        drawOnChartArea: true,
+                        drawTicks: false,
+                        borderDash: [5, 5]
+                    },
+                    ticks: {
+                        display: true,
+                        padding: 10,
+                        color: '#b2b9bf',
+                        font: {
+                            size: 11,
+                            family: "Open Sans",
+                            style: 'normal',
+                            lineHeight: 2
+                        },
+                    }
+                },
+                x: {
+                    grid: {
+                        drawBorder: false,
+                        display: true,
+                        drawOnChartArea: true,
+                        drawTicks: true,
+                        borderDash: [5, 5]
+                    },
+                    ticks: {
+                        display: true,
+                        color: '#b2b9bf',
+                        padding: 10,
+                        font: {
+                            size: 11,
+                            family: "Open Sans",
+                            style: 'normal',
+                            lineHeight: 2
+                        },
+                    }
+                },
+            },
+        },
+    });
+    //End
 
 
-    // Start Viewing range visualized
+
+    // Start Viewing range
     var watchedData = @json($productionDailyStatsWatchedTillPercentageTotals);
     // Extract labels and data from watchedData
     var labels = Object.keys(watchedData).map(key => key.replace('avg_watched_', '') + '%');
@@ -297,7 +407,7 @@
             },
         },
     });
-    // End Viewing range visualized
+    // End Viewing range
 
 
     // Start Browser data
@@ -440,7 +550,6 @@
     var labels = @json($labels);
     var productionDailyStatsProcessedAverages = @json($productionDailyStatsProcessedAverages);
     var productionDailyStatsProcessedAveragesArray = Object.values(productionDailyStatsProcessedAverages);
-    console.log(productionDailyStatsProcessedAveragesArray);
     var productionDailyStatsProcessedAveragesArrayMapped = productionDailyStatsProcessedAveragesArray.map(stat => stat.average_viewing_percentage);
 
     // Bar chart
@@ -502,5 +611,58 @@
         },
     });
     // End average viewing range
+
+    //Start
+    // Categorize OS into mobile, desktop, and tablet
+    var categories = {
+        "Mobile": ["iPhone", "iPod", "Android"],
+        "Desktop": ["Mac", "Windows 7", "Windows 10/11", "Chrome OS", "Linux", "FreeBSD", "Windows Vista", "Windows XP", "Windows 2000", "Windows 8", "Windows 8.1"],
+        "Tablet": ["iPad", "Android Tablet"]
+    };
+
+    // Initialize an object to store the cumulative counts for categories
+    var cumulativeCategoryStats = {"Mobile": 0, "Desktop": 0, "Tablet": 0};
+
+    // Process each day's data
+    for (var date in osStats) {
+        var dailyStats = osStats[date];
+        for (var os in dailyStats) {
+            // Determine the category for the current OS and add the count
+            for (var category in categories) {
+                if (categories[category].includes(os)) {
+                    cumulativeCategoryStats[category] += parseInt(dailyStats[os], 10);
+                }
+            }
+        }
+    }
+
+    // Prepare data for the chart
+    var labels = Object.keys(cumulativeCategoryStats);
+    var data = labels.map(label => cumulativeCategoryStats[label]);
+
+    // Create a pie chart
+    var ctx6 = document.getElementById("device-type-stats").getContext("2d");
+    new Chart(ctx6, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "OS Category Usage",
+                data: data,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], // Colors for Mobile, Desktop, Tablet
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                }
+            },
+        },
+    });
+    //END
 </script>
 @endpush
