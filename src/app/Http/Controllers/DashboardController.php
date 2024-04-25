@@ -134,6 +134,7 @@ class DashboardController extends Controller
 
         $fragmentStatsLatsPeriod = ProductionDailyStat::fetchDailyStats(30);
 
+        $productionViews=[];
         foreach ($fragmentsCsv as $index => $fragmentCsv) {
             $fragmentIds = explode(',', $fragmentCsv); // Convert CSV string to array of IDs
 

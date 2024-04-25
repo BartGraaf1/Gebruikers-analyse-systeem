@@ -14,7 +14,7 @@ Next, navigate in your terminal to the directory you cloned this, and spin up th
 - **mysql** - `:3307`
 - **php** - `:9000`
 - **redis** - `:6379`
-- **mailhog** - `:8025` 
+- **mailhog** - `:8025`
 
 Then Run this:
 
@@ -22,6 +22,7 @@ Then Run this:
 - `docker-compose run --rm npm run dev`
 - `docker-compose run --rm artisan migrate`
 - `docker-compose run --rm artisan db:seed`
+- `docker-compose run --rm artisan key:generate`
 - `docker-compose up scheduler`
 
 
