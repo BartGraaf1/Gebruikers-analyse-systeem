@@ -194,19 +194,22 @@ class ProductionController extends Controller
             return round(($pair[0] / $pair[1]) * 100, 2); // Convert to percentage
         });
 
+        //Collect all stats for the overview
         $sumViews = $totalViews->sum();
         $sumLoad = $totalLoad->sum();
         $averageOpenRate = $totalOpenRates->average();
-
-        // Output the results
-        dd([
-            'Sum of Views' => $sumViews,
-            'Sum of Loads' => $sumLoad,
-            'Sum of Open Rates' => $averageOpenRate,
-        ]);
+        $overallAverageViewingPercentage = $productionDailyStatsWithEmptyDays->avg(function ($item) {
+            return $item->average_viewing_percentage ?? 0;
+        });
+        $statsOverview = [
+            'total_views' => $sumViews,
+            'total_load' => $sumLoad,
+            'average_open_rate' => round($averageOpenRate, 2),
+            'overall_average_viewing_percentage' => round($overallAverageViewingPercentage, 2)
+        ];
 
         // Pass these arrays to your view
-        return view('production.production-statistics', compact('production','allFragments', 'fragmentIds', 'startDate', 'endDate', 'labels', 'totalViews', 'totalLoad', 'totalOpenRates', 'productionDailyStatsProcessedAverages', 'productionDailyStatsWatchedTillPercentageTotals', 'productionUserAgentStats', 'browserStats', 'osStats'));
+        return view('production.production-statistics', compact('production','allFragments', 'fragmentIds', 'startDate', 'endDate', 'labels', 'statsOverview', 'totalViews', 'totalLoad', 'totalOpenRates', 'productionDailyStatsProcessedAverages', 'productionDailyStatsWatchedTillPercentageTotals', 'productionUserAgentStats', 'browserStats', 'osStats'));
 
     }
 }

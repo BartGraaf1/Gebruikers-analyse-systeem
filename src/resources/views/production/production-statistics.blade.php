@@ -38,6 +38,19 @@
                     </form>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card z-index-2">
+                    <div class="card-header p-3 pb-0">
+                        <h5 class="card-title">Statistics Overview</h5> <!-- Title for the block -->
+                    </div>
+                    <div class="card-body p-3">
+                        <p class="mb-2"><strong>Total Views:</strong> {{ $statsOverview['total_views'] }}</p> <!-- Display total views -->
+                        <p class="mb-2"><strong>Total Loads:</strong> {{ $statsOverview['total_load'] }}</p> <!-- Display total load -->
+                        <p class="mb-2"><strong>Average Open Rate:</strong> {{ number_format($statsOverview['average_open_rate'], 2) }}%</p> <!-- Display average open rate -->
+                        <p class="mb-2"><strong>Average Viewing Percentage:</strong> {{ number_format($statsOverview['overall_average_viewing_percentage'], 2) }}%</p> <!-- Display overall average viewing percentage -->
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row mt-4">
             <div class="col-md-6">
