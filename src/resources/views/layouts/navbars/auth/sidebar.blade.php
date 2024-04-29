@@ -45,7 +45,7 @@
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Management</h6>
       </li>
         <li class="nav-item">
-            <a class="nav-link {{ (Str::startsWith(Request::path(), 'production-management') ? 'active' : '') }}" href="{{ url('production-management/overview') }}">
+            <a class="nav-link {{ (Str::startsWith(Request::path(), 'production-management') ? 'active' : '') }}" href="{{ url('production-management') }}">
                 <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 111.34">
                         <title>video</title>
