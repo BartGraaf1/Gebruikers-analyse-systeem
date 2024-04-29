@@ -1,23 +1,25 @@
-# docker-compose-laravel
-A pretty simplified Docker Compose workflow that sets up a LEMP network of containers for local Laravel development. You can view the full article that inspired this repo [here](https://dev.to/aschmelyun/the-beauty-of-docker-for-local-laravel-development-13c0).
+# Geavanceerd gebruikers analyse systeem
 
-## Usage
+## Vereisten
+Zorg ervoor dat [Docker](https://docs.docker.com/desktop/install/mac-install/) geïnstalleerd is op je systeem. Volg de installatiegids op Docker installeren.
 
-To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then clone this repository.
+## Installatie
 
-If you have already ran everything once, you can use this
-`docker-compose up -d`
+### Docker containers opzetten
+Ga naar de gekloonde directory:
+`cd [folder-naam]`
 
-Next, navigate in your terminal to the directory you cloned this, and spin up the containers for the web server by running `docker-compose up -d --build app`.
 
-- **nginx** - `:80`
-- **mysql** - `:3307`
-- **php** - `:9000`
-- **redis** - `:6379`
-- **mailhog** - `:8025`
+Plaats het bijgeleverde _.env_ bestand in de hoofdmap van het project. Deze is te vinden in de bijlagen. 
 
-Then Run this:
+    Gebruikers-analyse-systeem > src
 
+
+Start de Docker containers:
+`docker-compose up -d --build app`
+
+## Configuratie
+Draai vervolgense deze commands:
 - `docker-compose run --rm composer update`
 - `docker-compose run --rm npm run dev`
 - `docker-compose run --rm artisan migrate`
@@ -26,24 +28,10 @@ Then Run this:
 - `docker-compose up scheduler`
 
 
-Om de fragments te syncen
-- `docker-compose run --rm artisan app:populate-production-stats-catchup 400`
+## Final
+Dat is de installatie compleet! Er kan ingelogd worden met de volgende gegevens: 
 
-Mocht je phpMyAdmin willen gebruiken om de DB te navigeren
-- `docker-compose up phpmyadmin`
+#### admin@admin.com
+#### secret
 
-php artisan key:generate
-Run php artisan migrate --seed to create the database tables and seed the roles and users tables
-Run php artisan storage:link
-
-
-Restart Docker
-
-- `docker-compose down`
-- `docker-compose up -d`
-
-Om PhpMyAdmin te draaien, open de `docker-compose.yml` en druk hier op het pijltje naast PhpMyAdmin
-
-
-Misschien deze nog:
-`docker-compose run --rm artisan make:mail WelcomeMail`
+Voor een beter zicht naar de werken met verbeterede dummy data, zie de bijgeleverde video "Walk through functionaliteiten" bij de bijlagen.
