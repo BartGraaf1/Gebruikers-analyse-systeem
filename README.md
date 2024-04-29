@@ -7,7 +7,7 @@ Zorg ervoor dat [Docker](https://docs.docker.com/desktop/install/mac-install/) g
 
 ### Docker containers opzetten
 Ga naar de gekloonde directory:
-`cd [folder-naam]`
+`cd Gebruikers-analyse-systeem`
 
 
 Plaats het bijgeleverde _.env_ bestand in de hoofdmap van het project. Deze is te vinden in de bijlagen. 
