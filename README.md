@@ -34,4 +34,4 @@ Dat is de installatie compleet! Er kan ingelogd worden met de volgende gegevens:
     admin@admin.com
     secret
 
-Voor een beter zicht naar de werken met verbeterede dummy data, zie de bijgeleverde video "Walk through functionaliteiten" bij de bijlagen.
+Voor een beter zicht naar de werken met verbeterede dummy data, zie de bijgeleverde video "Realisatie product DEMO" bij de bijlagen.
